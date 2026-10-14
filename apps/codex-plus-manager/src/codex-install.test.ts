@@ -69,16 +69,23 @@ test("install panel polls status on mount and installs only from the button", ()
   assert.match(button.getText(app), /disabled=\{running \|\| detected\}/, "安装中或已检测到 Codex 时按钮要禁用");
 });
 
-test("maintenance hosts the install panel and overview links to it when Codex is missing", () => {
-  assert.match(functionSource("MaintenanceScreen").getText(app), /<CodexInstallPanel overview=\{overview\} actions=\{actions\} \/>/);
+test("install page sits in the workspace sidebar right above Codex multi-launch", () => {
+  assert.match(text, /\{ id: "codexInstall", label: t\("一键安装Codex"\), icon: Download, tool: "codex" \}/);
+  assert.match(text, /routes: \["overview", "relay", "codexInstall", "multiLaunch", "grok", "claude"\]/);
+  assert.match(text, /route === "codexInstall" \? <CodexInstallPanel overview=\{overview\} actions=\{actions\} \/> : null/);
+  assert.doesNotMatch(functionSource("MaintenanceScreen").getText(app), /CodexInstallPanel/, "安装面板已移到独立页面");
+});
+
+test("overview links to the install page when Codex is missing", () => {
   const overview = functionSource("OverviewScreen").getText(app);
   assert.match(overview, /codex_app\.status === "missing"/);
   assert.match(overview, /actions\.openCodexInstall\(\)/);
-  assert.match(text, /document\.getElementById\(CODEX_INSTALL_PANEL_ID\)/);
+  assert.match(text, /const openCodexInstall = \(\) => navigate\("codexInstall"\);/);
 });
 
 test("install copy has English translations", () => {
   for (const key of [
+    "一键安装Codex",
     "安装 Codex 桌面应用",
     "一键安装 Codex",
     "安装 Codex",

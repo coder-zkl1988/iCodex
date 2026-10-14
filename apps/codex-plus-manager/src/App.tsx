@@ -1027,7 +1027,7 @@ const TOOL_ICONS: Record<string, string> = {
   claude: new URL("./assets/agents/claude.svg", import.meta.url).href,
 };
 
-type Route = "overview" | "relay" | "multiLaunch" | "grok" | "claude" | "relayEnvironment" | "sessions" | "context" | "skills" | "weixin" | "enhance" | "dreamSkin" | "userScripts" | "pluginMarket" | "recommendations" | "agentCache" | "maintenance" | "about" | "settings";
+type Route = "overview" | "relay" | "codexInstall" | "multiLaunch" | "grok" | "claude" | "relayEnvironment" | "sessions" | "context" | "skills" | "weixin" | "enhance" | "dreamSkin" | "userScripts" | "pluginMarket" | "recommendations" | "agentCache" | "maintenance" | "about" | "settings";
 type Theme = "dark" | "light";
 
 const MANAGER_NAVIGATION_EVENT = "manager-navigation-requested";
@@ -1045,6 +1045,7 @@ const routes: Array<{ id: Route; label: string; icon: LucideIcon; badge?: string
   // 概览在两个工具下都可见：它承载共用的置顶推荐位，以及各自的状态。
   { id: "overview", label: t("概览"), icon: LayoutDashboard },
   { id: "relay", label: t("供应商配置"), icon: KeyRound, tool: "codex" },
+  { id: "codexInstall", label: t("一键安装Codex"), icon: Download, tool: "codex" },
   { id: "multiLaunch", label: t("Codex多开"), icon: Layers3, badge: "NEW", tool: "codex" },
   { id: "grok", label: t("Grok 配置"), icon: Blocks, tool: "grok" },
   { id: "claude", label: t("Claude 汉化"), icon: Languages, tool: "claude" },
@@ -1068,7 +1069,7 @@ const routes: Array<{ id: Route; label: string; icon: LucideIcon; badge?: string
 const navigationSections: Array<{ label: string; routes: Route[]; placement?: "bottom" }> = [
   {
     label: t("工作区"),
-    routes: ["overview", "relay", "multiLaunch", "grok", "claude"],
+    routes: ["overview", "relay", "codexInstall", "multiLaunch", "grok", "claude"],
   },
   {
     label: t("全局管理"),
@@ -2206,6 +2207,7 @@ export function App() {
       await refreshLogs(true);
       await refreshDiagnostics(true);
     }
+    if (next === "codexInstall") await refreshOverview(true);
     if (next === "maintenance") {
       await refreshOverview(true);
       await refreshWatcher(true);
@@ -3131,13 +3133,8 @@ export function App() {
     }
   };
 
-  // 概览里「未检测到 Codex」时的入口：跳到安装维护页，等页面渲染出来再滚到安装面板。
-  const openCodexInstall = async () => {
-    await navigate("maintenance");
-    window.setTimeout(() => {
-      document.getElementById(CODEX_INSTALL_PANEL_ID)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 80);
-  };
+  // 概览里「未检测到 Codex」时的入口：跳到侧边栏的「一键安装Codex」页。
+  const openCodexInstall = () => navigate("codexInstall");
 
   const showNotice = (title: string, message: string, status?: Status) => {
     setNotice({ title, message: t(message), status });
@@ -3732,6 +3729,7 @@ export function App() {
               actions={actions}
             />
           ) : null}
+          {route === "codexInstall" ? <CodexInstallPanel overview={overview} actions={actions} /> : null}
           {route === "multiLaunch" ? (
             <CodexMultiLaunchScreen form={settingsForm} actions={actions} />
           ) : null}
@@ -7608,8 +7606,6 @@ function RecommendationsScreen({ ads, actions }: { ads: AdsResult | null; action
   );
 }
 
-const CODEX_INSTALL_PANEL_ID = "codex-install-panel";
-
 type CodexInstallPhase = "idle" | "resolving" | "downloading" | "verifying" | "installing" | "succeeded" | "failed" | "cancelled";
 
 type CodexInstallState = {
@@ -7708,8 +7704,7 @@ function CodexInstallPanel({ overview, actions }: { overview: OverviewResult | n
   const failure = !running && state?.phase === "failed" ? state.message || state.error || "" : "";
   return (
     <Panel>
-      <div id={CODEX_INSTALL_PANEL_ID} />
-      <CardHead title={t("安装 Codex 桌面应用")} detail={t("本机没有 Codex 时，下载官方安装包、校验签名后自动安装")} />
+      <CardHead title={t("安装 Codex 桌面应用")} detail={t("检测本机的 Codex，没有安装时一键下载并安装")} />
       <CardContent>
         <div className="status-table">
           <StatusRow title={t("Codex 应用")} status={overview?.codex_app.status} path={overview?.codex_app.path} />
@@ -7741,7 +7736,7 @@ function CodexInstallPanel({ overview, actions }: { overview: OverviewResult | n
           <p className="hint">{t("安装包从镜像源（codexapp.agentsmirror.com）下载，是微软商店发布的官方安装包，校验微软商店签名后安装；安装失败时可以改用微软商店。")}</p>
         ) : null}
         {state && !state.supported ? (
-          <p className="hint">{t("当前平台暂不支持一键安装，请手动安装 Codex 后在下方「Codex 应用路径」里选择。")}</p>
+          <p className="hint">{t("当前平台暂不支持一键安装，请手动安装 Codex 后在「安装维护」页的「Codex 应用路径」里选择。")}</p>
         ) : null}
       </CardContent>
     </Panel>
@@ -7789,7 +7784,6 @@ function MaintenanceScreen({
           </Toolbar>
         </CardContent>
       </Panel>
-      <CodexInstallPanel overview={overview} actions={actions} />
       <Panel>
         <CardHead title={t("开机打开 Codex++")} detail={t("登录系统后打开 Codex++ 界面，Codex 仍需点击启动")} />
         <CardContent>
@@ -12488,6 +12482,7 @@ function routeSubtitle(route: Route) {
   const subtitles: Record<Route, string> = {
     overview: t("检查问题、启动与快速修复"),
     relay: t("管理 API 供应商、协议、Key 与配置文件"),
+    codexInstall: t("本机没有 Codex 时，下载官方安装包、校验签名后自动安装"),
     multiLaunch: t("为不同供应商启动相互隔离的 Codex 实例"),
     grok: t("管理 Grok CLI 的模型与 API 端点"),
     claude: t("保留官方 Claude.app 原样，通过受管副本动态应用中文界面"),

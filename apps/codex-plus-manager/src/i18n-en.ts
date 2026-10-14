@@ -1442,7 +1442,9 @@ export const EN_PLAIN: Record<string, string> = {
     "Transport headers such as Host and Content-Length are managed by the proxy and cannot be overridden. When Authorization is set here it takes precedence and the API key is not injected.",
 
   // 一键安装 Codex
+  "一键安装Codex": "Install Codex",
   "安装 Codex 桌面应用": "Install the Codex desktop app",
+  "检测本机的 Codex，没有安装时一键下载并安装": "Detects Codex on this computer and installs it in one click if it is missing",
   "本机没有 Codex 时，下载官方安装包、校验签名后自动安装":
     "If Codex is missing, download the official package, verify its signature and install it automatically",
   "已检测到 Codex，无需安装；之后由 Codex 自带的更新机制保持最新。":
@@ -1459,8 +1461,8 @@ export const EN_PLAIN: Record<string, string> = {
     "The package is downloaded from the mirror (codexapp.agentsmirror.com) first, falling back to OpenAI's official source. Either way, it is installed into the Applications folder only after passing OpenAI signature and Apple notarization checks.",
   "安装包从镜像源（codexapp.agentsmirror.com）下载，是微软商店发布的官方安装包，校验微软商店签名后安装；安装失败时可以改用微软商店。":
     "The official Microsoft Store package is downloaded from the mirror (codexapp.agentsmirror.com) and installed after its Microsoft Store signature is verified. If installation fails, use the Microsoft Store instead.",
-  "当前平台暂不支持一键安装，请手动安装 Codex 后在下方「Codex 应用路径」里选择。":
-    "One-click installation is not available on this platform. Install Codex manually, then choose it under \"Codex app path\" below.",
+  "当前平台暂不支持一键安装，请手动安装 Codex 后在「安装维护」页的「Codex 应用路径」里选择。":
+    "One-click installation is not available on this platform. Install Codex manually, then choose it under \"Codex app path\" on the Install & Maintenance page.",
 };
 
 // Interpolated strings: tf("前缀 {0}", [x]) -> EN_TEMPLATE["前缀 {0}"] with {0} filled.

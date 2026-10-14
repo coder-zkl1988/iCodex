@@ -565,7 +565,7 @@ pub fn describe_codex_app_dir_not_found(
     }
     format!(
         "Codex App directory not found: 没有配置应用路径，自动探测也未找到 Codex 桌面应用\
-         （已搜索：{}）。请在管理工具里手动选择 Codex 应用目录，或在「安装维护」页一键安装 Codex。",
+         （已搜索：{}）。请在管理工具里手动选择 Codex 应用目录，或在侧边栏「一键安装Codex」页安装。",
         describe_default_search_roots()
     )
 }
