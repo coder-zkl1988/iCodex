@@ -1440,10 +1440,32 @@ export const EN_PLAIN: Record<string, string> = {
     "Custom headers apply to the connection test, the model list and proxied requests alike.",
   "Host、Content-Length 等传输头由协议层掌控，不能覆盖；配置 Authorization 时以它为准，不再注入 API Key。":
     "Transport headers such as Host and Content-Length are managed by the proxy and cannot be overridden. When Authorization is set here it takes precedence and the API key is not injected.",
+
+  // 一键安装 Codex
+  "安装 Codex 桌面应用": "Install the Codex desktop app",
+  "本机没有 Codex 时，下载官方安装包、校验签名后自动安装":
+    "If Codex is missing, download the official package, verify its signature and install it automatically",
+  "已检测到 Codex，无需安装；之后由 Codex 自带的更新机制保持最新。":
+    "Codex is already installed. Its built-in updater keeps it up to date.",
+  "Codex 安装进度": "Codex installation progress",
+  "上次安装结果": "Last installation result",
+  "已取消安装。": "Installation cancelled.",
+  "正在安装…": "Installing…",
+  "一键安装 Codex": "Install Codex",
+  "安装 Codex": "Install Codex",
+  "取消安装": "Cancel installation",
+  "在微软商店打开": "Open in Microsoft Store",
+  "安装包优先从镜像源（codexapp.agentsmirror.com）下载，镜像不可用时改用 OpenAI 官方源；无论来源，都要通过 OpenAI 签名、Apple 公证校验才会装进「应用程序」文件夹。":
+    "The package is downloaded from the mirror (codexapp.agentsmirror.com) first, falling back to OpenAI's official source. Either way, it is installed into the Applications folder only after passing OpenAI signature and Apple notarization checks.",
+  "安装包从镜像源（codexapp.agentsmirror.com）下载，是微软商店发布的官方安装包，校验微软商店签名后安装；安装失败时可以改用微软商店。":
+    "The official Microsoft Store package is downloaded from the mirror (codexapp.agentsmirror.com) and installed after its Microsoft Store signature is verified. If installation fails, use the Microsoft Store instead.",
+  "当前平台暂不支持一键安装，请手动安装 Codex 后在下方「Codex 应用路径」里选择。":
+    "One-click installation is not available on this platform. Install Codex manually, then choose it under \"Codex app path\" below.",
 };
 
 // Interpolated strings: tf("前缀 {0}", [x]) -> EN_TEMPLATE["前缀 {0}"] with {0} filled.
 export const EN_TEMPLATE: Record<string, string> = {
+  "{0}（已下载 {1} / {2}）": "{0} ({1} of {2} downloaded)",
   "{0} 个插件": "{0} plugins",
   "{0} / {1} 个插件": "{0} / {1} plugins",
   "查看插件 {0} 的详情": "View details for plugin {0}",
@@ -1584,6 +1606,19 @@ export const EN_TEMPLATE: Record<string, string> = {
 // at the display layer (showNotice wraps message with t()). Exact-match first,
 // then pattern-based for messages that embed dynamic values.
 export const EN_BACKEND: Record<string, string> = {
+  // 一键安装 Codex 的进度文案（crates/codex-plus-core/src/codex_install）
+  "正在检查 Codex 安装环境…": "Checking the Codex installation environment…",
+  "正在读取镜像源的最新版本…": "Reading the latest version from the mirror…",
+  "正在读取 OpenAI 官方源的最新版本…": "Reading the latest version from OpenAI's official source…",
+  "正在校验 OpenAI 签名…": "Verifying the OpenAI signature…",
+  "正在解压并校验应用签名…": "Extracting the package and verifying the app signature…",
+  "正在校验应用签名与公证…": "Verifying the app signature and notarization…",
+  "正在移入应用目录…": "Moving the app into place…",
+  "正在校验安装包签名…": "Verifying the package signature…",
+  "正在调用 Windows 安装 Codex…": "Installing Codex with Windows…",
+  "已请求取消，正在停止安装…": "Cancellation requested. Stopping the installation…",
+  "当前没有进行中的 Codex 安装任务。": "No Codex installation is in progress.",
+  "已打开微软商店的 Codex 页面。": "Opened the Codex page in the Microsoft Store.",
   "扫描已失效，请重新扫描。": "The scan is no longer valid. Scan again.",
   "扫描已过期，请重新扫描。": "The scan has expired. Scan again.",
   "请选择缓存项目。": "Select cache items first.",
@@ -1743,4 +1778,10 @@ export const EN_BACKEND_PATTERNS: Array<[RegExp, string]> = [
   [/^启动系统浏览器失败：(.+)$/, "Failed to launch system browser: $1"],
   [/^诊断报告序列化失败：(.+)$/, "Failed to serialize diagnostics report: $1"],
   [/^响应：(.+)$/, "Response: $1"],
+  // 一键安装 Codex
+  [/^正在从 (.+) 下载安装包…$/, "Downloading the package from $1…"],
+  [/^Codex (\S+) 已安装到 (.+)$/, "Codex $1 has been installed to $2"],
+  [/^Codex (\S+) 已安装：(.+)$/, "Codex $1 installed: $2"],
+  [/^安装 Codex 失败：(.+)$/, "Failed to install Codex: $1"],
+  [/^安装失败：(.+)$/, "Installation failed: $1"],
 ];

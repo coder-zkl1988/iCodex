@@ -280,7 +280,7 @@ pub fn user_data_candidates_from(local: Option<&Path>, roaming: Option<&Path>) -
 pub fn find_macos_codex_app(search_roots: &[PathBuf]) -> Option<PathBuf> {
     for root in search_roots {
         for candidate in macos_app_candidates(root) {
-            if candidate.is_dir() {
+            if candidate.is_dir() && !is_known_non_codex_bundle(&candidate) {
                 return Some(candidate);
             }
         }
@@ -331,20 +331,32 @@ fn find_macos_codex_app_by_bundle_id(root: &Path, depth: usize) -> Option<PathBu
     None
 }
 
-/// 官方桌面应用的 bundle id。Codex 已并入 ChatGPT Desktop，两个都认
-/// （与 APP_PACKAGE_SPECS 里的 identity 列表保持一致）。
-#[cfg(not(windows))]
-const MACOS_CODEX_BUNDLE_IDENTIFIERS: &[&str] =
-    &["com.openai.codex", "com.openai.chat", "com.openai.chatgpt"];
+/// Codex 桌面应用的 bundle id。Codex 并入 ChatGPT Desktop 后，新版 ChatGPT.app 沿用的仍是它。
+const MACOS_CODEX_BUNDLE_IDENTIFIER: &str = "com.openai.codex";
+
+/// 是否为 Codex 桌面应用的 bundle id：`com.openai.codex` 及其子标识（如 `.dev`、`.beta`）。
+///
+/// 与 watcher.rs 的进程判据保持一致（issue #2222）：ChatGPT Classic（`com.openai.chat`）是纯聊天
+/// 应用，同样由 OpenAI 签名、可执行文件也叫 ChatGPT，但没有 Codex，不能当成 Codex 去启动。
+fn is_codex_desktop_bundle_identifier(identifier: &str) -> bool {
+    let identifier = identifier.trim().to_ascii_lowercase();
+    identifier == MACOS_CODEX_BUNDLE_IDENTIFIER
+        || identifier
+            .strip_prefix(MACOS_CODEX_BUNDLE_IDENTIFIER)
+            .is_some_and(|suffix| suffix.len() > 1 && suffix.starts_with('.'))
+}
 
 #[cfg(not(windows))]
 fn is_codex_bundle_identifier(app_dir: &Path) -> bool {
-    let Some(bundle_id) = macos_app_plist_value(app_dir, "CFBundleIdentifier") else {
-        return false;
-    };
-    MACOS_CODEX_BUNDLE_IDENTIFIERS
-        .iter()
-        .any(|known| bundle_id.trim().eq_ignore_ascii_case(known))
+    macos_app_plist_value(app_dir, "CFBundleIdentifier")
+        .is_some_and(|bundle_id| is_codex_desktop_bundle_identifier(&bundle_id))
+}
+
+/// 按固定名字命中的候选（如 `ChatGPT.app`）在能读到 bundle id 时也要核对，排除同名的
+/// ChatGPT Classic；读不到 Info.plist 时维持按名字认的旧行为。
+fn is_known_non_codex_bundle(app_dir: &Path) -> bool {
+    macos_app_plist_value(app_dir, "CFBundleIdentifier")
+        .is_some_and(|bundle_id| !is_codex_desktop_bundle_identifier(&bundle_id))
 }
 
 pub fn find_macos_codex_app_default() -> Option<PathBuf> {
@@ -553,7 +565,7 @@ pub fn describe_codex_app_dir_not_found(
     }
     format!(
         "Codex App directory not found: 没有配置应用路径，自动探测也未找到 Codex 桌面应用\
-         （已搜索：{}）。请在管理工具里手动选择 Codex 应用目录。",
+         （已搜索：{}）。请在管理工具里手动选择 Codex 应用目录，或在「安装维护」页一键安装 Codex。",
         describe_default_search_roots()
     )
 }
@@ -1495,8 +1507,64 @@ mod cli_path_tests {
 mod macos_discovery_tests {
     use super::{
         describe_codex_app_dir_not_found, describe_codex_app_dir_rejection, find_macos_codex_app,
+        is_codex_desktop_bundle_identifier,
     };
     use std::path::Path;
+
+    /// 与 watcher.rs 的进程判据一致：Codex 及其子标识算，ChatGPT Classic 与其它前缀相近的都不算。
+    #[test]
+    fn codex_bundle_identifier_matches_watcher_rules() {
+        for accepted in [
+            "com.openai.codex",
+            "com.openai.codex.dev",
+            "COM.OPENAI.CODEX.beta",
+        ] {
+            assert!(is_codex_desktop_bundle_identifier(accepted), "{accepted}");
+        }
+        for rejected in [
+            "com.openai.chat",
+            "com.openai.chatgpt",
+            "com.openai.codexextension",
+            "com.openai.codex.",
+            "",
+        ] {
+            assert!(!is_codex_desktop_bundle_identifier(rejected), "{rejected}");
+        }
+    }
+
+    /// 新版 ChatGPT.app 的 bundle id 是 com.openai.codex，按名字照常命中。
+    #[test]
+    fn finds_new_chatgpt_app_by_name() {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().join("Applications");
+        let app = root.join("ChatGPT.app");
+        write_bundle(&app, "com.openai.codex");
+
+        assert_eq!(
+            find_macos_codex_app(&[root]).as_deref(),
+            Some(app.as_path())
+        );
+    }
+
+    /// 只装了 ChatGPT Classic（纯聊天版）的机器不能被当成装了 Codex，
+    /// 无论它叫 `ChatGPT Classic.app` 还是沿用旧名 `ChatGPT.app`。
+    #[test]
+    fn chatgpt_classic_is_not_mistaken_for_codex() {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().join("Applications");
+        write_bundle(&root.join("ChatGPT Classic.app"), "com.openai.chat");
+        write_bundle(&root.join("ChatGPT.app"), "com.openai.chat");
+
+        assert_eq!(find_macos_codex_app(&[root.clone()]), None);
+
+        // 同时装着 Codex 时仍然找到 Codex。
+        let codex = root.join("OpenAI").join("Codex.app");
+        write_bundle(&codex, "com.openai.codex");
+        assert_eq!(
+            find_macos_codex_app(&[root]).as_deref(),
+            Some(codex.as_path())
+        );
+    }
 
     fn write_bundle(app: &Path, bundle_id: &str) {
         let contents = app.join("Contents");

@@ -10,6 +10,8 @@ pub mod cdp;
 pub mod claude_localization;
 pub mod codex_app_state;
 pub mod codex_home;
+// 本机没有 Codex 时一键安装官方桌面应用（镜像优先、官方兜底，均校验 OpenAI / 微软签名）。
+pub mod codex_install;
 pub mod codex_local_storage;
 pub mod codex_sqlite;
 pub mod connect;

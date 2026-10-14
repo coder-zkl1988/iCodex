@@ -3131,6 +3131,14 @@ export function App() {
     }
   };
 
+  // 概览里「未检测到 Codex」时的入口：跳到安装维护页，等页面渲染出来再滚到安装面板。
+  const openCodexInstall = async () => {
+    await navigate("maintenance");
+    window.setTimeout(() => {
+      document.getElementById(CODEX_INSTALL_PANEL_ID)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+  };
+
   const showNotice = (title: string, message: string, status?: Status) => {
     setNotice({ title, message: t(message), status });
   };
@@ -3578,6 +3586,7 @@ export function App() {
       deleteLocalSession,
       deleteLocalSessions,
       openExternalUrl,
+      openCodexInstall,
       applyRelayInjection,
       applyPureApiInjection,
       clearRelayInjection,
@@ -4109,6 +4118,7 @@ type Actions = {
   deleteLocalSession: (session: LocalSession) => Promise<void>;
   deleteLocalSessions: (sessions: LocalSession[]) => Promise<void>;
   openExternalUrl: (url: string) => Promise<void>;
+  openCodexInstall: () => Promise<void>;
   applyRelayInjection: () => Promise<boolean>;
   applyPureApiInjection: () => Promise<boolean>;
   clearRelayInjection: () => Promise<boolean>;
@@ -4725,7 +4735,14 @@ function OverviewScreen({
                     <strong>{t("Codex 版本")}</strong>
                     <span>{overview?.codex_version ?? t("未检测到 Codex 应用版本。")}</span>
                   </div>
-                  <Badge status={overview?.codex_version ? "ok" : "not_checked"} />
+                  {overview?.codex_app.status === "missing" ? (
+                    <Button size="sm" variant="outline" onClick={() => void actions.openCodexInstall()}>
+                      <Download className="h-4 w-4" />
+                      {t("安装 Codex")}
+                    </Button>
+                  ) : (
+                    <Badge status={overview?.codex_version ? "ok" : "not_checked"} />
+                  )}
                 </div>
                 {health.map((item) => (
                   <div className={`health-item ${item.ok ? "ok" : "needs-fix"}`} key={item.title}>
@@ -7591,6 +7608,146 @@ function RecommendationsScreen({ ads, actions }: { ads: AdsResult | null; action
   );
 }
 
+const CODEX_INSTALL_PANEL_ID = "codex-install-panel";
+
+type CodexInstallPhase = "idle" | "resolving" | "downloading" | "verifying" | "installing" | "succeeded" | "failed" | "cancelled";
+
+type CodexInstallState = {
+  phase: CodexInstallPhase;
+  message: string;
+  source?: string | null;
+  version?: string | null;
+  downloadedBytes: number;
+  totalBytes: number;
+  installedPath?: string | null;
+  error?: string | null;
+  platform: string;
+  supported: boolean;
+  storeUrl?: string | null;
+};
+
+const CODEX_INSTALL_ACTIVE_PHASES: CodexInstallPhase[] = ["resolving", "downloading", "verifying", "installing"];
+
+/** 下载占进度条的 0–90%，验签、解压与安装分到剩下的 10%。 */
+function codexInstallPercent(state: CodexInstallState): number {
+  if (state.phase === "succeeded") return 100;
+  const downloaded = state.totalBytes > 0 ? Math.min(1, state.downloadedBytes / state.totalBytes) * 90 : 0;
+  if (state.phase === "verifying") return Math.max(downloaded, 92);
+  if (state.phase === "installing") return Math.max(downloaded, 96);
+  return Math.max(downloaded, 1);
+}
+
+function formatInstallBytes(bytes: number): string {
+  const gib = 1024 * 1024 * 1024;
+  return bytes >= gib ? `${(bytes / gib).toFixed(2)} GB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
+
+function codexInstallProgress(state: CodexInstallState | null, running: boolean): TaskProgress {
+  if (!state) return { active: running, percent: running ? 1 : 0, message: "" };
+  const message = t(state.message);
+  if (running) {
+    const detail = state.phase === "downloading" && state.totalBytes > 0
+      ? tf("{0}（已下载 {1} / {2}）", [message, formatInstallBytes(state.downloadedBytes), formatInstallBytes(state.totalBytes)])
+      : message;
+    return { active: true, percent: codexInstallPercent(state), message: detail };
+  }
+  // 失败与取消单独用提示行展示，进度条只保留成功结果。
+  return state.phase === "succeeded"
+    ? { active: false, percent: 100, message }
+    : { active: false, percent: 0, message: "" };
+}
+
+/** 本机没有 Codex 时一键安装官方桌面应用；装好后由 Codex 自带的更新机制保持最新。 */
+function CodexInstallPanel({ overview, actions }: { overview: OverviewResult | null; actions: Actions }) {
+  const [state, setState] = useState<CodexInstallState | null>(null);
+  const [pending, setPending] = useState(false);
+  const [actionError, setActionError] = useState("");
+  // 只轮询状态；安装只由按钮触发，切页再回来能接上正在进行的任务。
+  useEffect(() => {
+    let active = true;
+    const refresh = () => invoke<CodexInstallState>("codex_install_status")
+      .then((next) => { if (active) setState(next); })
+      .catch(() => undefined);
+    void refresh();
+    const timer = window.setInterval(() => { void refresh(); }, 1000);
+    return () => { active = false; window.clearInterval(timer); };
+  }, []);
+  const running = pending || (state ? CODEX_INSTALL_ACTIVE_PHASES.includes(state.phase) : false);
+  const detected = overview?.codex_app.status === "found";
+  const platform = state?.platform ?? "";
+  const installCodex = async () => {
+    setPending(true);
+    setActionError("");
+    try {
+      // 失败原因由任务状态展示（见下方 failure），这里不再重复记一份。
+      const result = await invoke<CommandResult<CodexInstallState>>("install_codex_desktop");
+      setState(result);
+      if (result.status === "ok") await actions.refreshCurrent();
+    } catch (error) {
+      setActionError(stringifyError(error));
+    } finally {
+      setPending(false);
+    }
+  };
+  const cancelInstall = async () => {
+    try {
+      const result = await invoke<CommandResult<CodexInstallState>>("cancel_codex_install");
+      if (result.status !== "ok") setActionError(result.message);
+    } catch (error) {
+      setActionError(stringifyError(error));
+    }
+  };
+  const openStore = async () => {
+    try {
+      const result = await invoke<CommandResult<{ url: string }>>("open_codex_store_page");
+      if (result.status !== "ok") setActionError(result.message);
+    } catch (error) {
+      setActionError(stringifyError(error));
+    }
+  };
+  const failure = !running && state?.phase === "failed" ? state.message || state.error || "" : "";
+  return (
+    <Panel>
+      <div id={CODEX_INSTALL_PANEL_ID} />
+      <CardHead title={t("安装 Codex 桌面应用")} detail={t("本机没有 Codex 时，下载官方安装包、校验签名后自动安装")} />
+      <CardContent>
+        <div className="status-table">
+          <StatusRow title={t("Codex 应用")} status={overview?.codex_app.status} path={overview?.codex_app.path} />
+        </div>
+        {detected && !running ? <p className="hint">{t("已检测到 Codex，无需安装；之后由 Codex 自带的更新机制保持最新。")}</p> : null}
+        <TaskProgressBox progress={codexInstallProgress(state, running)} title={t("Codex 安装进度")} completedTitle={t("上次安装结果")} />
+        {failure ? <p className="hint" role="alert">{t(failure)}</p> : null}
+        {!running && state?.phase === "cancelled" ? <p className="hint">{t("已取消安装。")}</p> : null}
+        {actionError ? <p className="hint" role="alert">{t(actionError)}</p> : null}
+        <Toolbar>
+          {state?.supported ? (
+            <Button disabled={running || detected} onClick={() => void installCodex()}>
+              <Download className="h-4 w-4" />
+              {running ? t("正在安装…") : t("一键安装 Codex")}
+            </Button>
+          ) : null}
+          {running ? <Button variant="secondary" onClick={() => void cancelInstall()}>{t("取消安装")}</Button> : null}
+          {platform === "windows" ? (
+            <Button variant="secondary" onClick={() => void openStore()}>
+              <ExternalLink className="h-4 w-4" />
+              {t("在微软商店打开")}
+            </Button>
+          ) : null}
+        </Toolbar>
+        {platform === "macos" ? (
+          <p className="hint">{t("安装包优先从镜像源（codexapp.agentsmirror.com）下载，镜像不可用时改用 OpenAI 官方源；无论来源，都要通过 OpenAI 签名、Apple 公证校验才会装进「应用程序」文件夹。")}</p>
+        ) : null}
+        {platform === "windows" ? (
+          <p className="hint">{t("安装包从镜像源（codexapp.agentsmirror.com）下载，是微软商店发布的官方安装包，校验微软商店签名后安装；安装失败时可以改用微软商店。")}</p>
+        ) : null}
+        {state && !state.supported ? (
+          <p className="hint">{t("当前平台暂不支持一键安装，请手动安装 Codex 后在下方「Codex 应用路径」里选择。")}</p>
+        ) : null}
+      </CardContent>
+    </Panel>
+  );
+}
+
 function MaintenanceScreen({
   overview,
   launchPending,
@@ -7632,6 +7789,7 @@ function MaintenanceScreen({
           </Toolbar>
         </CardContent>
       </Panel>
+      <CodexInstallPanel overview={overview} actions={actions} />
       <Panel>
         <CardHead title={t("开机打开 Codex++")} detail={t("登录系统后打开 Codex++ 界面，Codex 仍需点击启动")} />
         <CardContent>

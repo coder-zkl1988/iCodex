@@ -15,6 +15,10 @@ futures-util = "0.3"
 fs2.workspace = true
 reqwest.workspace = true
 qrcode = { version = "0.14", default-features = false, features = ["svg"] }
+# 一键安装 Codex：解析 Sparkle appcast / AppxManifest，校验 Sparkle 的 Ed25519 签名。
+# 两者都已经作为传递依赖在 Cargo.lock 里（tauri / rustls），不引入新 crate。
+quick-xml = "0.39"
+ring = "0.17"
 rusqlite.workspace = true
 serde.workspace = true
 serde_json.workspace = true

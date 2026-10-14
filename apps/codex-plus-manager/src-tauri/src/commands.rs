@@ -38,6 +38,73 @@ pub async fn download_dictation_local_model() -> CommandResult<Value> {
     }
 }
 
+/// 「安装维护」页的 Codex 安装面板轮询用：只读任务状态与平台能力，不触发安装。
+#[tauri::command]
+pub fn codex_install_status() -> Value {
+    codex_plus_core::codex_install::status()
+}
+
+/// 本机没有 Codex 时一键安装官方桌面应用。下载可能持续数分钟，进度由 `codex_install_status`
+/// 轮询读取。只注册为管理器命令，不开放给用户脚本或公开 HTTP 路由。
+#[tauri::command]
+pub async fn install_codex_desktop() -> CommandResult<Value> {
+    let result = codex_plus_core::codex_install::install_latest(Default::default()).await;
+    let status = codex_install_payload();
+    match result {
+        Ok(outcome) => ok(
+            &format!(
+                "Codex {} 已安装：{}",
+                outcome.version, outcome.installed_path
+            ),
+            status,
+        ),
+        Err(error) => failed(&format!("安装 Codex 失败：{error:#}"), status),
+    }
+}
+
+#[tauri::command]
+pub fn cancel_codex_install() -> CommandResult<Value> {
+    let requested = codex_plus_core::codex_install::cancel();
+    let status = codex_install_payload();
+    if requested {
+        ok("已请求取消，正在停止安装…", status)
+    } else {
+        failed("当前没有进行中的 Codex 安装任务。", status)
+    }
+}
+
+/// 安装状态作为命令载荷时去掉 `message`：载荷会被展开到结果顶层，和结果自己的 `message` 重名。
+fn codex_install_payload() -> Value {
+    let mut status = codex_plus_core::codex_install::status();
+    if let Some(fields) = status.as_object_mut() {
+        fields.remove("message");
+    }
+    status
+}
+
+/// Windows：在微软商店打开 Codex 页面（镜像安装失败时的官方渠道）。地址是固定常量，不接受外部输入。
+#[tauri::command]
+pub fn open_codex_store_page() -> CommandResult<Value> {
+    use codex_plus_core::codex_install::{STORE_DEEP_LINK, STORE_WEB_URL};
+    #[cfg(windows)]
+    let result = codex_plus_core::windows_open_url(STORE_DEEP_LINK)
+        .or_else(|_| codex_plus_core::windows_open_url(STORE_WEB_URL));
+    #[cfg(not(windows))]
+    let result: anyhow::Result<()> = Err(anyhow::anyhow!(
+        "微软商店仅在 Windows 上可用（{STORE_DEEP_LINK}）"
+    ));
+    match result {
+        Ok(()) => ok(
+            "已打开微软商店的 Codex 页面。",
+            json!({ "url": STORE_WEB_URL }),
+        ),
+        Err(error) => failed(
+            &format!("打开微软商店失败：{error}"),
+            json!({ "url": STORE_WEB_URL }),
+        ),
+    }
+}
+
 #[tauri::command]
 pub fn claude_localization_status()
 -> CommandResult<codex_plus_core::claude_localization::ClaudeLocalizationStatus> {
