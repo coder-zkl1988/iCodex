@@ -1042,7 +1042,7 @@ const MANAGER_NAVIGATION_EVENT = "manager-navigation-requested";
  * 新增页面时**必须**想清楚归属：默认可见会让 Codex 专属功能在 Grok 下露出来。
  */
 const routes: Array<{ id: Route; label: string; icon: LucideIcon; badge?: string; tool?: string }> = [
-  // 概览在两个工具下都可见：它承载共用的置顶推荐位，以及各自的状态。
+  // 概览在两个工具下都可见，展示各自的状态。
   { id: "overview", label: t("概览"), icon: LayoutDashboard },
   { id: "relay", label: t("供应商配置"), icon: KeyRound, tool: "codex" },
   { id: "codexInstall", label: t("一键安装Codex"), icon: Download, tool: "codex" },
@@ -3168,9 +3168,6 @@ export function App() {
         void checkUpdate(true);
       }
       await refreshOverview(true);
-      // 概览页的赞助商区块要显示真实广告源内容，所以启动就拉一次，
-      // 不要等到用户点进「推荐内容」才加载。
-      await refreshAds(true);
       await refreshTools(true);
       if (!handledNavigation) await refreshSettings(true);
       await refreshRelay(true);
@@ -3713,7 +3710,6 @@ export function App() {
           {route === "overview" ? (
             <OverviewScreen
               overview={overview}
-              ads={ads}
               activeTool={activeTool}
               toolEntries={toolEntries}
               actions={actions}
@@ -4590,112 +4586,13 @@ function WeixinConnectScreen({
   );
 }
 
-/// 概览页的置顶推荐位。
-///
-/// 概览页和推荐内容页共用同一份数据、同一个渲染，所以两处看到的赞助商是
-/// 一致的 —— 以前概览页把赞助商内容硬编码在 JSX 里，跟推荐内容页各说各话。
-///
-/// 数据来自广告源里的 sponsor 条目。
-/// 概览页置顶赞助位。
-///
-/// 这个位置**不来自推荐池** —— 广告源里的 `top_ad` 可配置单个对象或数组，
-/// 多条时自动轮播。没有有效条目时不显示置顶赞助位。
-function SponsorBoard({ ads, actions }: { ads: AdsResult | null; actions: Actions }) {
-  const sourceAds = ads?.topAds?.length ? ads.topAds : ads?.topAd ? [ads.topAd] : [];
-  const featured = sourceAds.filter((ad) => !isExpiredAd(ad));
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [hovered, setHovered] = useState(false);
-  const [focusWithin, setFocusWithin] = useState(false);
-  const paused = hovered || focusWithin;
-
-  useEffect(() => {
-    if (featured.length < 2 || paused) return;
-    const timer = window.setInterval(() => {
-      if (document.visibilityState === "visible") {
-        setActiveIndex((index) => (index + 1) % featured.length);
-      }
-    }, 6000);
-    return () => window.clearInterval(timer);
-  }, [featured.length, paused]);
-
-  if (featured.length === 0) return null;
-  const activePosition = activeIndex % featured.length;
-  const ad = featured[activePosition];
-  const move = (offset: number) => {
-    setActiveIndex((index) => (index + offset + featured.length) % featured.length);
-  };
-
-  return (
-    <div
-      className="sponsor-board"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocusCapture={() => setFocusWithin(true)}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setFocusWithin(false);
-      }}
-    >
-      <Panel className="jojocode-overview">
-        <CardContent>
-          <div className="jojocode-overview-layout">
-            <div className="jojocode-overview-main">
-              {ad.image ? (
-                <img alt="" className="sponsor-logo" src={ad.image} />
-              ) : (
-                <div className="jojocode-overview-mark">
-                  <Network className="h-5 w-5" />
-                </div>
-              )}
-              <div aria-live={paused ? "polite" : "off"} className="sponsor-carousel-copy" key={ad.id || ad.title}>
-                <span className="eyebrow">{t("推荐内容")}</span>
-                <h2>{formatAdTitle(ad.title)}</h2>
-                <p className="recommendation-description" title={ad.description}>{ad.description}</p>
-              </div>
-            </div>
-            <div className="jojocode-overview-side">
-              {ad.highlights?.length ? (
-                <div className="jojocode-model-tags">
-                  {ad.highlights.map((item) => (
-                    <span key={item}>{item}</span>
-                  ))}
-                </div>
-              ) : null}
-              <div className="sponsor-carousel-actions">
-                <Button onClick={() => void actions.openExternalUrl(ad.url)}>
-                  <ExternalLink className="h-4 w-4" />
-                  {t("打开推荐内容")}
-                </Button>
-                {featured.length > 1 ? (
-                  <div aria-label={t("赞助商轮播")} className="sponsor-carousel-controls" role="group">
-                    <Button aria-label={t("上一条")} onClick={() => move(-1)} size="icon" variant="outline">
-                      <ArrowLeft className="h-4 w-4" />
-                    </Button>
-                    <span aria-live={paused ? "polite" : "off"} className="sponsor-carousel-count">
-                      {activePosition + 1} / {featured.length}
-                    </span>
-                    <Button aria-label={t("下一条")} onClick={() => move(1)} size="icon" variant="outline">
-                      <ArrowRight className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Panel>
-    </div>
-  );
-}
-
 function OverviewScreen({
   overview,
-  ads,
   activeTool,
   toolEntries,
   actions,
 }: {
   overview: OverviewResult | null;
-  ads: AdsResult | null;
   activeTool: ToolId;
   toolEntries: ToolEntry[];
   actions: Actions;
@@ -4704,8 +4601,6 @@ function OverviewScreen({
   const tool = toolEntries.find((entry) => entry.id === activeTool);
   return (
     <>
-      {/* 置顶推荐位两个工具下都显示，内容与「推荐内容」页同源。 */}
-      <SponsorBoard ads={ads} actions={actions} />
       {activeTool === "codex" ? (
         <>
           <Panel>
