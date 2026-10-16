@@ -96,7 +96,7 @@ assert.equal(window.active, 0);
 run('first'); run('deleted');
 assert.equal(window.active, 0);
 run('legacy');
-assert.throws(() => run('first'), /Codex\+\+/);
+assert.throws(() => run('first'), /iCodex/);
 assert.equal(window.active, 0); // 不能不清理就追加新实例
 window.__codexPlusUserScriptsBootstrap = true;
 assert.equal(run('first').mode, 'page');

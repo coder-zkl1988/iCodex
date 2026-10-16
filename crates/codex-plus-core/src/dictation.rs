@@ -764,7 +764,7 @@ fn bridge_request_id(payload: &Value) -> Result<uuid::Uuid, DictationError> {
     if !valid_helper_token(payload.get("helperToken").and_then(Value::as_str)) {
         return Err(DictationError::new(
             403,
-            "语音请求未授权，请从 Codex++ 重新发起",
+            "语音请求未授权，请从 iCodex 重新发起",
         ));
     }
     let value = payload

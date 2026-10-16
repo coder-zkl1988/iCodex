@@ -29,7 +29,7 @@ bottom-aligned submenu transforms, browser containment/animated bounds, icon bad
 and overlapping logo stacks, plus extension widgets above the composer. Composer
 contents retain native stacking and shadows; their background uses a static paint
 plane without per-control SVGs. Overlay layers 1000-1003 sit below extension widgets;
-Codex++ full-page shells retain their own native layer and wallpaper background.
+iCodex full-page shells retain their own native layer and wallpaper background.
 
 Each shared case checks JavaScript errors, reversibility, released observers and
 unchanged native animation APIs. Pixel tolerance remains one channel value.

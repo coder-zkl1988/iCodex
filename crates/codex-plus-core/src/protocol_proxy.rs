@@ -4373,7 +4373,7 @@ fn normalize_responses_item_id(item: &mut Value) {
     // 剥掉 id 上现有的前缀再换新的。取**最长**匹配：`fc_` 是 `fco_` 的前缀，
     // 先撞上短的会把 `fco_call_a` 剥成 `call_a` 再换成 `fc_call_a`，
     // 把 function_call_output 错改成 function_call。
-    // `item_` 是历史版本 Codex++ 自己造的前缀；`cp_` 来自压缩项错误使用
+    // `item_` 是历史版本 iCodex 自己造的前缀；`cp_` 来自压缩项错误使用
     // `cp_{response_id}` 的版本；`resp_` 来自历史版本把 message item 命名成
     // `{response_id}_msg`（#1431 / #1781），都要一并剥掉。
     let suffix = ["item_", "cp_", "resp_"]

@@ -131,7 +131,7 @@ fn discover_roots(home: &Path, codex: &Path) -> Result<Vec<CacheRoot>> {
         for (app, name) in [
             ("Codex", "Codex"),
             ("Codex", "com.openai.codex"),
-            ("Codex++", "com.bigpizzav3.codexplusplus.current-build"),
+            ("iCodex", "com.bigpizzav3.codexplusplus.current-build"),
             ("Claude", "com.anthropic.claudefordesktop"),
             ("Claude", "local.claudecodecn.claude"),
             ("Claude", "claude-cli-nodejs"),
@@ -515,7 +515,7 @@ impl CachePlan {
             .iter()
             .filter(|group| ids.contains(&group.id))
         {
-            let app = if group.app == "Codex++" {
+            let app = if group.app == "iCodex" {
                 "Codex"
             } else {
                 &group.app
@@ -588,11 +588,12 @@ fn apps_from_process_names(names: &str) -> BTreeSet<String> {
             .next()
             .unwrap_or("")
             .trim_end_matches(".exe");
-        // 管理工具自身需要保持运行；Codex++ 客户端与 Codex 共用缓存。
+        // 管理工具自身需要保持运行；iCodex 客户端与 Codex 共用缓存。
         if executable.contains("manager") || executable == "ps" {
             continue;
         }
         if name.contains("codex.app/")
+            || name.contains("icodex.app/")
             || name.contains("codex++.app/")
             || ["codex", "codex++", "codex-plus-launcher", "codex-plus-plus"].contains(&executable)
             || executable.starts_with("codex helper")

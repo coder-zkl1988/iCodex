@@ -5,7 +5,7 @@ CodexPlusPlus Logo v2
 最终生成提示词：
 
 Use case: logo-brand.
-Asset type: a single production-ready square desktop application icon for CodexPlusPlus (Codex++), an independent companion app for AI coding, model switching, and workflow enhancements.
+Asset type: a single production-ready square desktop application icon for CodexPlusPlus (iCodex), an independent companion app for AI coding, model switching, and workflow enhancements.
 Primary request: redesign the project logo into a distinctive, simple terminal-and-double-plus symbol. Preserve the existing project's blue-to-violet visual identity.
 Scene/backdrop: genuinely transparent outside a single centered rounded-square app tile. The tile fills about 88% of the square canvas with balanced margins. Inside the tile use a refined deep cobalt-to-violet gradient, subtle and smooth.
 Subject: one strong minimalist white terminal chevron followed by exactly two equally sized plus signs, forming the readable symbol ">++". Make the chevron and two plus signs one cohesive bold geometric mark. Generous spacing, thick strokes, optically balanced, ample breathing room inside the tile. The mark occupies about 66% of the tile width. The two plus signs must have equal horizontal and vertical arm lengths and identical stroke widths.

@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Codex++",
+  "productName": "iCodex",
   "version": "1.8.0",
   "identifier": "com.bigpizzav3.codexplusplus",
   "build": {
@@ -14,7 +14,7 @@
       {
         "create": false,
         "label": "main",
-        "title": "Codex++",
+        "title": "iCodex",
         "width": 1180,
         "height": 820,
         "minWidth": 960,

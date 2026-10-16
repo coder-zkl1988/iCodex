@@ -186,7 +186,7 @@ export function PluginMarketScreen() {
       {notice ? (
         <div aria-live="polite" className={`plugin-market-feedback ${notice.failed ? "plugin-market-error" : ""}`} role={notice.failed ? "alert" : "status"}>
           <span>{notice.message}</span>
-          {notice.restart ? <span>{t("新开聊天或重启 Codex++ 后加载已安装插件。")}</span> : null}
+          {notice.restart ? <span>{t("新开聊天或重启 iCodex 后加载已安装插件。")}</span> : null}
         </div>
       ) : null}
       {installing ? (

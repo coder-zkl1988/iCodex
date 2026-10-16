@@ -39,14 +39,14 @@ export function browserRecognizedSuffix(recognized: boolean | undefined): string
 export function nativeBrowserStatusLabel(state: string): string {
   switch (state) {
     case "disabled": return "兼容选项未启用";
-    case "not_started": return "等待下次启动 Codex++；保存设置不会自动重启";
+    case "not_started": return "等待下次启动 iCodex；保存设置不会自动重启";
     case "waiting_for_runtime": return "等待原生插件生成运行时";
     case "prepared": return "兼容服务文件已准备，等待原生工作进程加载";
     case "restored": return "服务文件已恢复；扩展保留的请求标识不受此操作影响";
     case "runtime_unverified": return "未应用旧版兼容补丁：当前运行时版本不匹配";
     case "blocked": return "兼容补丁文件检查或恢复受阻，已保留文件";
     case "unsupported": return "此平台未提供 Edge / Chrome 请求标识兼容补丁";
-    case "stale": return "状态已过期；需启动本版本 Codex++ 后重新检查";
+    case "stale": return "状态已过期；需启动本版本 iCodex 后重新检查";
     default: return "无法读取兼容补丁状态";
   }
 }

@@ -80,7 +80,7 @@ create_app() {
   <array>
     <dict>
       <key>CFBundleURLName</key>
-      <string>Codex++ Links</string>
+      <string>iCodex Links</string>
       <key>CFBundleURLSchemes</key>
       <array>
         <string>codexplusplus</string>
@@ -228,15 +228,15 @@ verify_app() {
 
 prepare_icon
 prepare_background
-create_app "Codex++" "CodexPlusPlus" "$BINARY_DIR/codex-plus-plus" "com.bigpizzav3.codexplusplus" "false"
+create_app "iCodex" "CodexPlusPlus" "$BINARY_DIR/codex-plus-plus" "com.bigpizzav3.codexplusplus" "false"
 # 旧版 1.7.x 更新器要求第二个 manager bundle。它使用独立的小型兼容壳，
 # 启动后立即退出；新版启动主 app 后会把这个壳归档到 legacy-migrations。
 create_app "Codex++ 管理工具" "CodexPlusPlusManager" "$BINARY_DIR/codex-plus-legacy-shim" "com.bigpizzav3.codexplusplus.manager" "true"
 
-sign_app "$STAGE/Codex++.app"
+sign_app "$STAGE/iCodex.app"
 sign_app "$STAGE/Codex++ 管理工具.app"
 
-verify_app "$STAGE/Codex++.app"
+verify_app "$STAGE/iCodex.app"
 verify_app "$STAGE/Codex++ 管理工具.app"
 
 # Finder 隐藏兼容壳；旧更新器按精确路径读取它，不能改名或放入子目录。
@@ -327,7 +327,7 @@ trap cleanup_dmg_work_dir EXIT
 
 DMG_CREATED=false
 for attempt in 1 2 3 4 5; do
-  if hdiutil create -volname "Codex++" -srcfolder "$STAGE" -ov -format UDRW "$DMG_WORK_PATH"; then
+  if hdiutil create -volname "iCodex" -srcfolder "$STAGE" -ov -format UDRW "$DMG_WORK_PATH"; then
     DMG_CREATED=true
     break
   fi
@@ -374,7 +374,7 @@ with timeout of 30 seconds
 
     tell dmgDisk
       set position of item "Applications" to {1000, 390}
-      set position of item "Codex++.app" to {460, 390}
+      set position of item "iCodex.app" to {460, 390}
       set visible of item "Codex++ 管理工具.app" to false
     end tell
 

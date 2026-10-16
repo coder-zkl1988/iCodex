@@ -1,7 +1,7 @@
 //! 「自动接管官方 App」的判据与状态机。
 //!
-//! 背景：Codex++ 原本只有「管理工具点启动」一条接管入口。用户自己双击 / `open -a`
-//! 启动官方 App 时，App 不带 `--remote-debugging-port`，Codex++ 接不上去。
+//! 背景：iCodex 原本只有「管理工具点启动」一条接管入口。用户自己双击 / `open -a`
+//! 启动官方 App 时，App 不带 `--remote-debugging-port`，iCodex 接不上去。
 //! 本模块只负责**判断该不该动作**——纯逻辑、无 IO、无平台依赖，便于跨平台单测；
 //! 真正的探测（`ps`/`osascript`）与退出在 `launcher` 里，触发源在管理器进程。
 //!
@@ -414,7 +414,7 @@ pub struct TakeoverInputs {
     pub cdp_ready: bool,
     /// 实际调试端口（不是硬编码的 9229：端口被占时会自动换位）。
     pub actual_port: u16,
-    /// 存在 Codex++ 多开 worker 实例。
+    /// 存在 iCodex 多开 worker 实例。
     pub multi_instance_running: bool,
     /// 管理器进程内有启动/重启在途（`LAUNCH_IN_PROGRESS`）。
     pub takeover_in_progress: bool,

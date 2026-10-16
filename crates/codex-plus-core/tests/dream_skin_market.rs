@@ -16,7 +16,7 @@ fn market_theme(config: &[u8], image: &[u8]) -> DreamSkinMarketTheme {
         id: "market-demo".to_string(),
         name: "Market Demo".to_string(),
         version: "1.0.0".to_string(),
-        author: "Codex++".to_string(),
+        author: "iCodex".to_string(),
         description: "Test theme".to_string(),
         license: "MIT".to_string(),
         source_url: "https://github.com/BigPizzaV3/CodexPlusPlus-Themes".to_string(),

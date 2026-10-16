@@ -20,7 +20,7 @@ test("app cards aggregate total and cleanable sizes separately, including statis
   const groups = [group("cache"), group("temporary", { totalBytes: 200, eligibleBytes: 0, eligibleFiles: 0, cleanable: false }),
     group("claude", { app: "Claude", totalBytes: 300, eligibleBytes: 120 })];
   const apps = cacheApps(groups);
-  assert.deepEqual(apps.map((app) => app.name), ["Codex", "Claude", "Codex++"]);
+  assert.deepEqual(apps.map((app) => app.name), ["Codex", "Claude", "iCodex"]);
   assert.equal(apps[0].totalBytes, 300);
   assert.equal(apps[0].eligibleBytes, 60);
   assert.equal(apps[0].groups.length, 2);
@@ -33,11 +33,11 @@ test("cleanup summary stays compact with many directories and excludes ineligibl
   const groups = Array.from({ length: 100 }, (_, index) => group(`directory-${index}`, {
     app: index % 2 ? "Claude" : "Codex",
   }));
-  groups.push(group("plus", { app: "Codex++" }),
+  groups.push(group("plus", { app: "iCodex" }),
     group("statistics", { app: "Other", cleanable: false }),
     group("recent", { app: "Other", eligibleFiles: 0, eligibleBytes: 0 }));
   assert.deepEqual(cacheCleanupSummary(groups), {
-    apps: ["Codex", "Claude", "Codex++"], files: 202, bytes: 6060,
+    apps: ["Codex", "Claude", "iCodex"], files: 202, bytes: 6060,
   });
   assert.deepEqual(cacheCleanupSummary([]), { apps: [], files: 0, bytes: 0 });
 });

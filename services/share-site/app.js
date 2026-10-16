@@ -23,7 +23,7 @@ if (shareId) {
 
 function setupComposer() {
   form.hidden = true;
-  setNotice("会话分享已移除；请在本机 Codex++ 中管理会话。", "error");
+  setNotice("会话分享已移除；请在本机 iCodex 中管理会话。", "error");
   return;
 
   /* Legacy composer kept below so existing encrypted links remain readable. */
@@ -155,7 +155,7 @@ function rolloutToMarkdown(content, title) {
 async function importSharedSession() {
   const viewNotice = document.querySelector("[data-view-notice]");
   if (viewNotice) {
-    viewNotice.textContent = "Codex++ 会话导入已移除，请使用本地会话管理。";
+    viewNotice.textContent = "iCodex 会话导入已移除，请使用本地会话管理。";
     viewNotice.dataset.type = "error";
   }
 }

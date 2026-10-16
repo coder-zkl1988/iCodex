@@ -649,7 +649,7 @@ enum GitFailure {
 impl GitFailure {
     fn message(self, private: bool) -> &'static str {
         match self {
-            Self::Missing => "未找到 Git，请安装 Git 并重新启动 Codex++",
+            Self::Missing => "未找到 Git，请安装 Git 并重新启动 iCodex",
             Self::Network => {
                 "Git 网络连接失败，请检查代理、DNS、证书或网络连接；此错误不需要重新登录 gh"
             }

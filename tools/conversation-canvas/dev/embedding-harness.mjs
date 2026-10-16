@@ -1,4 +1,4 @@
-// Isolated fixture using the Codex++ export contract, with both frame and network access blocked.
+// Isolated fixture using the iCodex export contract, with both frame and network access blocked.
 import http from 'node:http';
 import fs from 'node:fs';
 const root=new URL('../public/',import.meta.url);

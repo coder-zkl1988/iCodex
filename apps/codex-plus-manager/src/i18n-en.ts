@@ -1,4 +1,4 @@
-// English translations for the Codex++ manager UI, keyed by the original
+// English translations for the iCodex manager UI, keyed by the original
 // Chinese source text. Generated keys live in tools/i18n-keys.json; run
 // `node tools/i18n-verify.mjs` to confirm this dictionary covers exactly that
 // set (no missing or stale entries). See src/i18n.ts for how these are used.
@@ -18,13 +18,13 @@ export const EN_PLAIN: Record<string, string> = {
   "已连接": "Connected",
   "未连接": "Disconnected",
   "此兼容补丁仅适配 Windows 上的 Edge / Chrome；下次启动 Codex 时应用。扩展可能保留请求标识设置。": "This compatibility patch supports Edge / Chrome on Windows and applies the next time you start Codex. Extensions may retain their request identification settings.",
-  "Codex++ 应用入口": "Codex++ application",
-  "缺少 Codex++ 快捷方式时可在安装维护页修复。": "Repair a missing Codex++ shortcut on the Install & Maintenance page.",
-  "开机打开 Codex++": "Open Codex++ at login",
-  "登录系统后打开 Codex++ 界面，Codex 仍需点击启动": "Open the Codex++ window at login. Start Codex from this window.",
+  "iCodex 应用入口": "iCodex application",
+  "缺少 iCodex 快捷方式时可在安装维护页修复。": "Repair a missing iCodex shortcut on the Install & Maintenance page.",
+  "开机打开 iCodex": "Open iCodex at login",
+  "登录系统后打开 iCodex 界面，Codex 仍需点击启动": "Open the iCodex window at login. Start Codex from this window.",
   "登录时自动打开": "Open automatically at login",
   "开启后注册系统登录项，关闭时移除；Codex 仍需你手动点击启动。": "Turning this on registers a system login item and turning it off removes it; you still start Codex manually.",
-  "检查 Codex++ 入口、Codex 应用和开机启动状态": "Check the Codex++ shortcut, Codex app and login startup status",
+  "检查 iCodex 入口、Codex 应用和开机启动状态": "Check the iCodex shortcut, Codex app and login startup status",
 
   "Fast（priority）支持": "Fast (priority) support",
   "思考等级": "Reasoning levels",
@@ -44,7 +44,7 @@ export const EN_PLAIN: Record<string, string> = {
   "Codex 用量挂件": "Codex usage widget",
   "原版角色、泡泡编辑器、音效库和提醒，显示 Codex 会话与全机用量。点击角色旁的菜单配置。": "Original character, bubble editor, sound library and alerts, with Codex session and local usage. Open the menu beside the character to configure them.",
   "API 余额（可选）": "API balance (optional)",
-  "跟随 Codex++ 当前供应商查询余额；Codex 订阅额度和本地 token 无需配置此项。": "Query the current Codex++ provider's balance. Codex subscription limits and local tokens work without this configuration.",
+  "跟随 iCodex 当前供应商查询余额；Codex 订阅额度和本地 token 无需配置此项。": "Query the current iCodex provider's balance. Codex subscription limits and local tokens work without this configuration.",
   "余额查询方式": "Balance source",
   "自动识别已支持的接口": "Recognize supported providers",
   "仅显示 Codex 用量": "Codex usage only",
@@ -128,7 +128,7 @@ export const EN_PLAIN: Record<string, string> = {
   "应用缓存": "Application cache",
   "确认清理 AI Agent 缓存": "Confirm AI Agent cache cleanup",
   "AI Agent 缓存清理": "AI Agent cache cleanup",
-  "扫描 Codex、Claude 与 Codex++ 的已知缓存目录，由你选择清理项目。": "Scan known cache directories for Codex, Claude and Codex++, then choose what to clean.",
+  "扫描 Codex、Claude 与 iCodex 的已知缓存目录，由你选择清理项目。": "Scan known cache directories for Codex, Claude and iCodex, then choose what to clean.",
   "会话、凭据、配置、插件和虚拟机资源不在清理范围。临时文件仅统计；最近 24 小时修改的文件、链接及变化的文件会跳过。": "Sessions, credentials, configuration, plugins and VM resources are excluded. Temporary files are counted only. Files modified within 24 hours, links and changed files are skipped.",
   "正在扫描缓存…": "Scanning caches…",
   "扫描缓存": "Scan caches",
@@ -200,8 +200,8 @@ export const EN_PLAIN: Record<string, string> = {
   "修复警告：": "Repair warning: ",
   "启动前整理会话归属并检查缺失消息；运行期间每 30 分钟复查索引。保存设置后生效。":
     "Repair session ownership and check for missing messages before launch; recheck the index every 30 minutes while running. Save settings to apply.",
-  "自动检查需要从此界面启动 Codex，并保持 Codex++ 运行，且自动修复开关已开启并保存；每次检查完成后间隔 30 分钟复查。此页面每 15 秒刷新报告，不会单独启动修复；再次检查不保证恢复。":
-    "Automatic checks require starting Codex from this window and keeping Codex++ running and automatic repair to be enabled and saved; checks repeat 30 minutes after the previous check finishes. This page refreshes the report every 15 seconds without starting a repair; another check does not guarantee recovery.",
+  "自动检查需要从此界面启动 Codex，并保持 iCodex 运行，且自动修复开关已开启并保存；每次检查完成后间隔 30 分钟复查。此页面每 15 秒刷新报告，不会单独启动修复；再次检查不保证恢复。":
+    "Automatic checks require starting Codex from this window and keeping iCodex running and automatic repair to be enabled and saved; checks repeat 30 minutes after the previous check finishes. This page refreshes the report every 15 seconds without starting a repair; another check does not guarantee recovery.",
   "短暂等待最长 30 分钟；原文和记录文件都已超过 24 小时未更新的项目直接转入需核查。缺少对应轮次或结束状态，当前证据不足以安全补回；后续检查仍会核验。":
     "Items wait for up to 30 minutes; when both the original message and its record file have been unchanged for more than 24 hours, the item goes directly to review. A missing native turn or completion state means there is insufficient evidence to safely restore it; later checks will still verify it.",
   "主导航": "Main navigation",
@@ -234,8 +234,8 @@ export const EN_PLAIN: Record<string, string> = {
   "Codex 意外停止": "Codex stopped unexpectedly",
   "Codex 版本": "Codex version",
   "Codex CLI 路径": "Codex CLI path",
-  "Codex++ 导入": "Codex++ import",
-  "Codex++ 版本": "Codex++ version",
+  "iCodex 导入": "iCodex import",
+  "iCodex 版本": "iCodex version",
   "Codex-Dream-Skin 风格主题和换图": "Codex-Dream-Skin style themes and image replacement",
   "Codex增强": "Codex enhancements",
   "Debug 端口": "Debug port",
@@ -352,7 +352,7 @@ export const EN_PLAIN: Record<string, string> = {
   "实机验证": "Live verification",
   "项目来源：Fei-Away/Codex-Dream-Skin · 原作者 Fei-Away · MIT License · 第三方图片需自行确认授权":
     "Source: Fei-Away/Codex-Dream-Skin · Fei-Away · MIT License · Confirm third-party image rights before use",
-  "配置保存在 Codex++，实时操作通过本机回环 CDP 执行": "Configuration stays in Codex++; live operations use the local loopback CDP connection",
+  "配置保存在 iCodex，实时操作通过本机回环 CDP 执行": "Configuration stays in iCodex; live operations use the local loopback CDP connection",
   "应用会保存当前图片与主题配置；恢复原始外观不会删除主题。":
     "Applying saves the current image and theme; restoring the original appearance does not delete the theme.",
   "保存并应用主题；需要重启时只会标记为待应用": "Save and apply the theme; when a restart is required it will only be marked as pending",
@@ -464,7 +464,7 @@ export const EN_PLAIN: Record<string, string> = {
   "高级参数": "Advanced parameters",
   "TOML 配置体": "TOML config body",
   "Watcher 状态": "Watcher status",
-  "Watcher 用于保持 Codex++ 接管状态": "The watcher keeps Codex++ in control",
+  "Watcher 用于保持 iCodex 接管状态": "The watcher keeps iCodex in control",
   "Watcher 自动接管": "Watcher auto-takeover",
   "仅支持 V2 桌宠；不会修改宠物文件。将 V2 的 Computer Use 光标朝向动作映射到真实鼠标，V1 开启后安全不生效；拖拽、原生悬停或 Computer Use 活跃时自动让步。":
     "V2 pets only; pet files are never modified. Maps the V2 Computer Use cursor-look animation to the real mouse cursor. V1 pets safely remain unchanged, while dragging, native hover, and active Computer Use take priority.",
@@ -617,7 +617,7 @@ export const EN_PLAIN: Record<string, string> = {
   "入口检查与修复、开机启动与应用路径": "Entrypoint checks and repairs, launch at login and app path",
   "全选当前列表": "Select all in current list",
   "关于": "About",
-  "关于 Codex++": "About Codex++",
+  "关于 iCodex": "About iCodex",
   "关闭": "Off",
   "关闭后本工具不会在手动切换时写入 Codex 的 config.toml / auth.json；启动 Codex 时始终不会自动改这些文件。":
     "When off, this tool won't write Codex's config.toml / auth.json on manual switches; it never auto-modifies these files when launching Codex.",
@@ -786,7 +786,7 @@ export const EN_PLAIN: Record<string, string> = {
   "官方登录": "Official login",
   "官方登录模式": "Official login mode",
   "对话居中宽度": "Centered conversation width",
-  "导入 Codex++ 供应商": "Import Codex++ provider",
+  "导入 iCodex 供应商": "Import iCodex provider",
   "尚未刷新": "Not refreshed yet",
   "尚未加载推荐内容": "Recommendations not loaded yet",
   "尚未检查 Codex 应用路径。": "Codex app path not checked yet.",
@@ -816,8 +816,8 @@ export const EN_PLAIN: Record<string, string> = {
   "应用路径留空时使用已保存路径；没有保存路径时使用自动探测": "When the app path is empty, the saved path is used; with no saved path, auto-detection is used",
   "应用路径覆盖": "App path override",
   "开启": "On",
-  "开启后，通过 Codex++ 启动 Codex 前自动整理一次旧对话的归属标记。":
-    "When on, tidies up ownership tags of old conversations once before launching Codex through Codex++.",
+  "开启后，通过 iCodex 启动 Codex 前自动整理一次旧对话的归属标记。":
+    "When on, tidies up ownership tags of old conversations once before launching Codex through iCodex.",
   "当前": "Current",
   "当前页会话": "Sessions on this page",
   "会话总数": "Total sessions",
@@ -859,7 +859,7 @@ export const EN_PLAIN: Record<string, string> = {
   "打开项目主页": "Open project homepage",
   "扩展项": "entry",
   "批量删除会话": "Bulk delete sessions",
-  "把 Codex++ 菜单插入 Codex 顶部原生菜单栏。": "Insert the Codex++ menu into Codex's top native menu bar.",
+  "把 iCodex 菜单插入 Codex 顶部原生菜单栏。": "Insert the iCodex menu into Codex's top native menu bar.",
   "把主对话和输入框限制到固定最大宽度，适合大屏阅读。": "Constrain the main conversation and input box to a fixed max width, good for large-screen reading.",
   "投稿": "Submit",
   "拖动排序": "Drag to reorder",
@@ -943,8 +943,8 @@ export const EN_PLAIN: Record<string, string> = {
   "诊断供应商": "Diagnose provider",
   "检测": "Detect",
   "检测到 OPENAI 环境变量": "OPENAI environment variables detected",
-  "检测到来自网页的供应商配置导入请求，确认后会写入本机 Codex++。":
-    "A provider config import request from the web was detected; confirming writes it to this machine's Codex++ manager.",
+  "检测到来自网页的供应商配置导入请求，确认后会写入本机 iCodex。":
+    "A provider config import request from the web was detected; confirming writes it to this machine's iCodex manager.",
   "概览": "Overview",
   "概览只展示关键问题，具体配置在对应页面处理": "The overview shows only key issues; specific configuration is handled on the relevant pages",
   "概览已检查": "Overview checked",
@@ -968,8 +968,8 @@ export const EN_PLAIN: Record<string, string> = {
   "正在检查会话 provider 标记…": "Checking session provider tags…",
   "正在获取 GitHub Release 信息…": "Fetching GitHub Release information…",
   "正常": "OK",
-  "此上游会通过本地 127.0.0.1:57321 转成 Responses API，需要从 Codex++ 启动 Codex。":
-    "This upstream is converted to the Responses API via local 127.0.0.1:57321, which requires launching Codex from Codex++.",
+  "此上游会通过本地 127.0.0.1:57321 转成 Responses API，需要从 iCodex 启动 Codex。":
+    "This upstream is converted to the Responses API via local 127.0.0.1:57321, which requires launching Codex from iCodex.",
   "此供应商会保留官方登录模式，并把请求混入当前 API Key；Codex增强仍使用兼容模式。":
     "This provider keeps official login mode and mixes the current API Key into requests; Codex enhancements stay in compatible mode.",
   "此供应商会切回官方登录模式，使用 ChatGPT 官方账号，不写入 API Key。":
@@ -1032,7 +1032,7 @@ export const EN_PLAIN: Record<string, string> = {
   "强制中文界面": "Force Chinese UI",
   "强制启用 Codex App 内置 zh-CN 语言包，避免 Statsig/VPN 不通时回退英文。需重启 Codex 才能完整生效。": "Force the built-in zh-CN locale pack in the Codex app so the UI does not fall back to English when Statsig or the VPN is unreachable. Fully applies after restarting Codex.",
   "容量错误自动重试": "Auto-retry on capacity errors",
-  "模型容量不足（Selected model is at capacity）时自动点「重试」。Codex 原生只会自动重试 4 次且带 10/30/120/300 秒倒计时，之后只剩手动按钮；开启后由 Codex++ 立刻接管，原生倒计时也不等。间隔与次数上限在 Codex 应用内的 Codex++ 设置里调整。": "Automatically clicks Retry when the selected model is at capacity. Codex only auto-retries four times on its own, spaced by a 10/30/120/300 second countdown, and then leaves a manual button; when enabled, Codex++ takes over immediately without waiting for that countdown. Adjust the interval and attempt limit in the Codex++ settings inside the Codex app.",
+  "模型容量不足（Selected model is at capacity）时自动点「重试」。Codex 原生只会自动重试 4 次且带 10/30/120/300 秒倒计时，之后只剩手动按钮；开启后由 iCodex 立刻接管，原生倒计时也不等。间隔与次数上限在 Codex 应用内的 iCodex 设置里调整。": "Automatically clicks Retry when the selected model is at capacity. Codex only auto-retries four times on its own, spaced by a 10/30/120/300 second countdown, and then leaves a manual button; when enabled, iCodex takes over immediately without waiting for that countdown. Adjust the interval and attempt limit in the iCodex settings inside the Codex app.",
   "索引": "Index",
   "纯 API": "Pure API",
   "纯文本模型请配置此项": "Configure this for text-only models",
@@ -1055,7 +1055,7 @@ export const EN_PLAIN: Record<string, string> = {
   "编辑后保存列表，再切换模式时会使用新配置": "After editing, save the list; the new config is used the next time you switch modes",
   "编辑扩展项": "Edit entry",
   "缺失": "Missing",
-  "缺少 Codex++ 静默启动快捷方式时可在安装维护页修复。": "When the Codex++ silent launch shortcut is missing, repair it on the Install & Maintenance page.",
+  "缺少 iCodex 静默启动快捷方式时可在安装维护页修复。": "When the iCodex silent launch shortcut is missing, repair it on the Install & Maintenance page.",
   "缺少管理工具快捷方式时可在安装维护页修复。": "When the manager shortcut is missing, repair it on the Install & Maintenance page.",
   "聚合": "Aggregate",
   "聚合/中转": "Aggregate/relay",
@@ -1140,7 +1140,7 @@ export const EN_PLAIN: Record<string, string> = {
   "Codex 实例启动失败，请查看实例列表中的原因。": "Codex instance failed to start; see the reason in the instance list.",
   "启动失败": "Start failed",
   "自动接管官方 App": "Auto-takeover of the official app",
-  "你自己双击启动官方 App 时，Codex++ 自动接管并注入增强": "When you launch the official app yourself, Codex++ takes over and injects its enhancements.",
+  "你自己双击启动官方 App 时，iCodex 自动接管并注入增强": "When you launch the official app yourself, iCodex takes over and injects its enhancements.",
   "接管状态": "Takeover state",
   "监听中": "Watching",
   "官方 App": "Official app",
@@ -1152,9 +1152,9 @@ export const EN_PLAIN: Record<string, string> = {
   "刷新状态": "Refresh state",
   "本次已跳过自动接管，重启官方 App 后恢复。": "Auto-takeover is skipped for this instance; it resumes after you restart the official app.",
   "自动接管目前只支持 macOS。": "Auto-takeover is currently macOS only.",
-  "仅在 Codex++ 正在运行时生效；需要重启官方 App 时会自动重启。": "Only effective while Codex++ is running; the official app is restarted automatically when needed.",
-  "仅在 Codex++ 正在运行时生效；建议同时开启上面的「开机打开 Codex++」。": "Only effective while Codex++ is running; keeping the login item above enabled is recommended.",
-  "开启后，你自己启动官方 App 时 Codex++ 会自动接管。官方 App 已在运行且没有调试端口时，会先退出再带参数重开（可能中断正在进行的操作）。": "Once enabled, Codex++ takes over whenever you launch the official app yourself. If it is already running without a debug port, it is quit and relaunched with debug flags (this may interrupt work in progress).",
+  "仅在 iCodex 正在运行时生效；需要重启官方 App 时会自动重启。": "Only effective while iCodex is running; the official app is restarted automatically when needed.",
+  "仅在 iCodex 正在运行时生效；建议同时开启上面的「开机打开 iCodex」。": "Only effective while iCodex is running; keeping the login item above enabled is recommended.",
+  "开启后，你自己启动官方 App 时 iCodex 会自动接管。官方 App 已在运行且没有调试端口时，会先退出再带参数重开（可能中断正在进行的操作）。": "Once enabled, iCodex takes over whenever you launch the official app yourself. If it is already running without a debug port, it is quit and relaunched with debug flags (this may interrupt work in progress).",
   "上次接管：{0}": "Last takeover: {0}",
   "覆盖图片": "Overlay image",
   "背景适配方式": "Background fit mode",
@@ -1284,8 +1284,8 @@ export const EN_PLAIN: Record<string, string> = {
   "请先创建一个 Responses API 目标供应商": "Create a Responses API target provider first",
   "添加协议转换": "Add protocol conversion",
   "单模型协议转换需要填写模型名称和目标供应商。": "Each protocol conversion requires a model name and target provider.",
-  "仅在当前供应商启用时生效；精确匹配模型名并使用目标供应商的 URL 与 Key。目标必须是 Responses API，且需要从 Codex++ 启动。":
-    "Applies only while this provider is active. It exactly matches the model name and uses the target provider's URL and key. The target must use the Responses API, and Codex must be launched through Codex++.",
+  "仅在当前供应商启用时生效；精确匹配模型名并使用目标供应商的 URL 与 Key。目标必须是 Responses API，且需要从 iCodex 启动。":
+    "Applies only while this provider is active. It exactly matches the model name and uses the target provider's URL and key. The target must use the Responses API, and Codex must be launched through iCodex.",
   "Grok 配置": "Grok configuration",
   "正在读取本机 Grok 配置": "Reading local Grok configuration",
   "重新读取": "Reload",
@@ -1506,8 +1506,8 @@ export const EN_TEMPLATE: Record<string, string> = {
   "{0} 状态": "{0} status",
   "{0} 设置": "{0} settings",
   "{0} 个已保存": "{0} saved",
-  "Grok 里所有由 Codex++ 管理的模型表会被供应商「{0}」的模型列表整体替换（[ui]、web_search 等未管理字段保留）。原配置会先备份。":
-    "Every model table managed by Codex++ in Grok will be replaced wholesale by the model list of provider \"{0}\" (unmanaged fields such as [ui] and web_search are kept). The previous config is backed up first.",
+  "Grok 里所有由 iCodex 管理的模型表会被供应商「{0}」的模型列表整体替换（[ui]、web_search 等未管理字段保留）。原配置会先备份。":
+    "Every model table managed by iCodex in Grok will be replaced wholesale by the model list of provider \"{0}\" (unmanaged fields such as [ui] and web_search are kept). The previous config is backed up first.",
   "已新增供应商「{0}」，填好模型列表后点「应用到 Grok」。":
     "Added provider \"{0}\"; fill in its model list and click Apply to Grok.",
   "供应商「{0}」已保存。": "Provider \"{0}\" saved.",

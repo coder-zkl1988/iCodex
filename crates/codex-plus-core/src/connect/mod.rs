@@ -274,7 +274,7 @@ pub async fn run_weixin_connect_with_codex_path(
                     let _ = client
                         .send_text_chunks(
                             &message.from_user_id,
-                            "Codex 处理失败，请在 Codex++ 管理器中查看连接状态。",
+                            "Codex 处理失败，请在 iCodex 管理器中查看连接状态。",
                             &message.context_token,
                         )
                         .await;
@@ -418,7 +418,7 @@ fn is_allowed_peer(allow_from: &str, peer: &str) -> bool {
 }
 
 /// 模型流量若走本地代理（config.toml 的 openai_base_url 指向 127.0.0.1，
-/// 由 Codex++ 的单模型路由写入），该代理只随从 Codex++ 启动的桌面版存在。
+/// 由 iCodex 的单模型路由写入），该代理只随从 iCodex 启动的桌面版存在。
 /// 提前探测，避免 turn 失败后只剩一句模糊的「处理失败」。
 async fn local_model_endpoint_unreachable_reason() -> Option<String> {
     let base_url = std::fs::read_to_string(
@@ -436,7 +436,7 @@ async fn local_model_endpoint_unreachable_reason() -> Option<String> {
     }
     Some(
         "Codex 桌面版当前未运行，微信连接暂时无法调用模型。\
-         请先从 Codex++ 启动 Codex 桌面版后重试。"
+         请先从 iCodex 启动 Codex 桌面版后重试。"
             .to_string(),
     )
 }

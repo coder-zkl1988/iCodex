@@ -401,7 +401,7 @@
       .codex-plus-plugin-empty { padding: 40px 16px; text-align: center; color: var(--codex-plus-text-secondary); }
       @media (max-width: 600px) { .codex-plus-plugin-card { flex-direction: column; gap: 10px; } .codex-plus-plugin-install { align-self: flex-end; } }
       /*
-       * 新版导航图标栏里的 Codex++ / 拓展 / 推荐内容入口：原生按钮只放图标，
+       * 新版导航图标栏里的 iCodex / 拓展 / 推荐内容入口：原生按钮只放图标，
        * 这里对齐它的尺寸。
        *
        * 用 [data-codex-plus-rail] 而不是逐个列 id——早先按 id 写，加第三个入口时
@@ -1325,7 +1325,7 @@
       .codex-plus-form-message[data-status="failed"], .codex-plus-service-tier-status[data-status="failed"], .codex-plus-backend-label[data-status="failed"] { color: var(--codex-plus-danger); }
       .codex-plus-backend-label[data-status="degraded"] { color: var(--codex-plus-warning); }
       .codex-plus-form-message[data-status="loading"], .codex-plus-service-tier-status[data-status="unsupported"], .codex-plus-model-compat-warning { color: var(--codex-plus-warning); }
-      /* Codex++ 设置主页：对齐原生设置页，保持其它页面与弹窗的布局独立。 */
+      /* iCodex 设置主页：对齐原生设置页，保持其它页面与弹窗的布局独立。 */
       .${codexPlusPageClass} .codex-plus-modal-content[data-codex-plus-active-tab="home"] {
         background: var(--codex-plus-settings-page-bg, var(--codex-plus-bg-primary)) !important;
       }

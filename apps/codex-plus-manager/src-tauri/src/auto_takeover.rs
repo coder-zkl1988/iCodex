@@ -1,7 +1,7 @@
 //! 自动接管官方 App：守护线程与状态快照。
 //!
 //! 用户自己双击 / Dock / `open -a` 启动官方 App 时，App 不带
-//! `--remote-debugging-port`，Codex++ 接不上去。本模块起一个探针线程，发现
+//! `--remote-debugging-port`，iCodex 接不上去。本模块起一个探针线程，发现
 //! 「官方 App 在跑 + 没有我们的调试端口」就调用既有 launcher 会话把它接管过来
 //! （已在跑的实例由 launcher 负责优雅退出后带参重开）。
 //!

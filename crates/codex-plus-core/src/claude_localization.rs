@@ -495,7 +495,7 @@ pub fn perform(action: &str) -> Result<ClaudeLocalizationResult> {
             let backup = config.with_extension("codex-plus-locale-backup.json");
             let previous = read_config(&config)?.get("locale").cloned();
             let original = if action == "restore" {
-                ensure!(backup.is_file(), "没有 codex++ 保存的语言备份");
+                ensure!(backup.is_file(), "没有 iCodex 保存的语言备份");
                 let saved: Value = serde_json::from_slice(&fs::read(&backup)?)?;
                 saved
                     .get("locale")

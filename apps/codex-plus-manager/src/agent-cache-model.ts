@@ -32,7 +32,7 @@ export function cacheCleanupSummary(groups: CacheGroup[]) {
 }
 
 export function cacheApps(groups: CacheGroup[]) {
-  const names = [...new Set(["Codex", "Claude", "Codex++", ...groups.map((group) => group.app)])];
+  const names = [...new Set(["Codex", "Claude", "iCodex", ...groups.map((group) => group.app)])];
   return names.map((name) => {
     const appGroups = groups.filter((group) => group.app === name);
     return {

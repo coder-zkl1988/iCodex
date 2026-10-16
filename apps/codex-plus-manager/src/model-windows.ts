@@ -33,7 +33,7 @@ export type ImageHandling = "" | "send-as-is" | "strip" | "vlm";
 export type ModelWindowRow = {
   model: string;
   window: string;
-  /// 自动压缩百分比；空值在保存时使用 Codex++ 的明确默认值 90%。
+  /// 自动压缩百分比；空值在保存时使用 iCodex 的明确默认值 90%。
   autoCompact: string;
   imageHandling: ImageHandling;
 };

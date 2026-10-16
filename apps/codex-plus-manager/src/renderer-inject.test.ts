@@ -213,8 +213,8 @@ describe("renderer injection header compatibility", () => {
   it("adds the session copy shortcut through the native fork action", async () => {
     const renderer = await readFile(new URL("../../../assets/inject/renderer-inject.js", import.meta.url), "utf8");
 
-    assert.match(renderer, /原地复制会话 - Codex\+\+/);
-    assert.match(renderer, /createSessionMoreMenuItem\("原地复制会话 - Codex\+\+"/);
+    assert.match(renderer, /原地复制会话 - iCodex/);
+    assert.match(renderer, /createSessionMoreMenuItem\("原地复制会话 - iCodex"/);
     assert.match(renderer, /getAttribute\("aria-label"\)[\s\S]*聊天操作/);
     assert.match(renderer, /从这里创建聊天分支/);
     assert.match(renderer, /data-app-action-sidebar-thread-selected/);
@@ -248,7 +248,7 @@ describe("renderer injection header compatibility", () => {
     assert.match(renderer, /\.find\(isNativeSessionRenameMenuItem\)/);
   });
 
-  it("removes the legacy Codex++ top-bar entry", async () => {
+  it("removes the legacy iCodex top-bar entry", async () => {
     const renderer = await readFile(new URL("../../../assets/inject/renderer-inject.js", import.meta.url), "utf8");
 
     assert.doesNotMatch(renderer, /function installCodexPlusMenu\(\)/);
@@ -256,7 +256,7 @@ describe("renderer injection header compatibility", () => {
     assert.doesNotMatch(renderer, /codex-plus-trigger/);
   });
 
-  it("places Codex++ in the native sidebar and opens a main-content page", async () => {
+  it("places iCodex in the native sidebar and opens a main-content page", async () => {
     const renderer = await readFile(new URL("../../../assets/inject/renderer-inject.js", import.meta.url), "utf8");
 
     assert.match(renderer, /codexPlusSidebarNavId\s*=\s*"codex-plus-sidebar-nav"/);
@@ -285,7 +285,7 @@ describe("renderer injection header compatibility", () => {
     assert.match(renderer, /document\.querySelectorAll\(`#\$\{codexPlusMenuId\}/);
   });
 
-  it("mounts Codex++ and 拓展 entries into the new navigation rail", async () => {
+  it("mounts iCodex and 拓展 entries into the new navigation rail", async () => {
     const renderer = await readFile(new URL("../../../assets/inject/renderer-inject.js", import.meta.url), "utf8");
 
     assert.match(renderer, /codexPlusRailNavId\s*=\s*"codex-plus-rail-nav"/);
@@ -314,7 +314,7 @@ describe("renderer injection header compatibility", () => {
     assert.match(renderer, /const installed = document\.getElementById\(codexPlusSidebarNavId\)\s*\|\| document\.getElementById\(codexPlusRailNavId\);/);
   });
 
-  it("opens 拓展 as a standalone page instead of a Codex++ tab", async () => {
+  it("opens 拓展 as a standalone page instead of a iCodex tab", async () => {
     const renderer = await readFile(new URL("../../../assets/inject/renderer-inject.js", import.meta.url), "utf8");
 
     assert.match(renderer, /codexPlusExtensionsTab\s*=\s*"extensions"/);
@@ -452,7 +452,7 @@ describe("renderer injection header compatibility", () => {
     assert.doesNotMatch(renderer.slice(start, end), /data-codex-extensions-search|setSelectionRange/);
   });
 
-  it("does not install Codex++ UI in embedded browser documents", async () => {
+  it("does not install iCodex UI in embedded browser documents", async () => {
     const renderer = await readFile(new URL("../../../assets/inject/renderer-inject.js", import.meta.url), "utf8");
 
     assert.match(renderer, /window\.top\s*!==\s*window/);
@@ -1464,7 +1464,7 @@ it("opens Stepwise configuration in the manager enhancement page", async () => {
   );
   await openManager();
   assert.deepEqual(requests, [{ route: "/manager/open-transient", payload: { page: "enhance", section: "stepwise" } }]);
-  assert.equal(state.settingsStatus, "已打开 Codex++");
+  assert.equal(state.settingsStatus, "已打开 iCodex");
   assert.equal(renders, 2);
 });
 

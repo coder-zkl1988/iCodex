@@ -15,7 +15,7 @@ fn windows_entrypoint_plan_has_one_gui_executable_and_shortcut() {
         remove_owned_data: false,
     };
     let plan = build_windows_entrypoint_plan(&options);
-    assert!(plan.silent_shortcut.ends_with("Codex++.lnk"));
+    assert!(plan.silent_shortcut.ends_with("iCodex.lnk"));
     assert_eq!(plan.silent_shortcut, plan.manager_shortcut);
     assert_eq!(plan.launcher_path, "C:/Tools/codex-plus-plus.exe");
     assert_eq!(plan.launcher_path, plan.manager_path);
@@ -52,14 +52,14 @@ fn windows_entrypoint_plan_keeps_owned_data_removal_option() {
 fn macos_bundle_metadata_has_one_native_gui_app_with_url_protocols() {
     let options = InstallOptions {
         install_root: Some("/Applications".into()),
-        launcher_path: Some("/opt/Codex++.app/Contents/MacOS/CodexPlusPlus".into()),
+        launcher_path: Some("/opt/iCodex.app/Contents/MacOS/CodexPlusPlus".into()),
         manager_path: Some("/opt/old-manager".into()),
         remove_owned_data: false,
     };
     let app = build_macos_app_bundle(&options, false);
     assert_eq!(app, build_macos_app_bundle(&options, true));
-    assert!(app.app_path.ends_with("Codex++.app"));
-    assert!(app.info_plist.contains("<string>Codex++</string>"));
+    assert!(app.app_path.ends_with("iCodex.app"));
+    assert!(app.info_plist.contains("<string>iCodex</string>"));
     assert!(
         app.info_plist
             .contains("<key>CodexPlusUnifiedApp</key>\n  <true/>")
@@ -81,8 +81,8 @@ fn macos_bundle_metadata_has_one_native_gui_app_with_url_protocols() {
 
 #[test]
 fn installer_name_helpers_and_legacy_constants_keep_api_compatibility() {
-    assert_eq!(shortcut_names(), ("Codex++.lnk", "Codex++.lnk"));
-    assert_eq!(app_bundle_names(), ("Codex++.app", "Codex++.app"));
+    assert_eq!(shortcut_names(), ("iCodex.lnk", "iCodex.lnk"));
+    assert_eq!(app_bundle_names(), ("iCodex.app", "iCodex.app"));
     assert_eq!(SILENT_BINARY, APP_BINARY);
     assert_eq!(SILENT_BUNDLE_ID, APP_BUNDLE_ID);
     assert_eq!(MANAGER_BINARY, "codex-plus-plus-manager");
@@ -173,11 +173,13 @@ fn windows_installer_migrates_existing_shortcuts_without_reviving_deleted_ones()
             text.contains(r#"IfFileExists "$DESKTOP\Codex++ 管理工具.lnk" desktop_entry_found 0"#)
         );
         assert!(
-            text.contains(
-                r#"CreateShortcut "$DESKTOP\Codex++.lnk" "$INSTDIR\codex-plus-plus.exe""#
-            )
+            text.contains(r#"CreateShortcut "$DESKTOP\iCodex.lnk" "$INSTDIR\codex-plus-plus.exe""#)
         );
-        assert!(text.contains(r#"CreateShortcut "$SMPROGRAMS\Codex++\Codex++.lnk""#));
+        assert!(text.contains(r#"CreateShortcut "$SMPROGRAMS\iCodex\iCodex.lnk""#));
+        // 改名前的 Codex++ 入口：升级时仍算「已有桌面入口」，并在重建前清理掉。
+        assert!(text.contains(r#"IfFileExists "$DESKTOP\Codex++.lnk" desktop_entry_found 0"#));
+        assert!(text.contains(r#"Delete "$DESKTOP\Codex++.lnk""#));
+        assert!(text.contains(r#"Delete "$SMPROGRAMS\Codex++\Codex++.lnk""#));
         assert!(!text.contains(r#"CreateShortcut "$DESKTOP\Codex++ 管理工具.lnk""#));
         assert!(!text.contains(r#"File "${ROOT}\dist\windows\app\codex-plus-plus-manager.exe""#));
     }
@@ -217,7 +219,7 @@ fn windows_installer_waits_for_normal_exit_and_cancels_without_writing_apps() {
 fn macos_dmg_includes_one_visible_app_and_hidden_legacy_updater() {
     let script = std::fs::read_to_string("../../scripts/installer/macos/package-dmg.sh").unwrap();
     assert!(script.contains("ln -s /Applications \"$STAGE/Applications\""));
-    assert!(script.contains("Codex++.app"));
+    assert!(script.contains("iCodex.app"));
     // The legacy updater still looks up this exact companion path. It is
     // intentionally shipped as a hidden, self-exiting compatibility shim.
     assert!(script.contains("Codex++ 管理工具.app"));
@@ -230,7 +232,7 @@ fn macos_dmg_includes_one_visible_app_and_hidden_legacy_updater() {
     assert_eq!(
         app_commands,
         [
-            r#"create_app "Codex++" "CodexPlusPlus" "$BINARY_DIR/codex-plus-plus" "com.bigpizzav3.codexplusplus" "false""#,
+            r#"create_app "iCodex" "CodexPlusPlus" "$BINARY_DIR/codex-plus-plus" "com.bigpizzav3.codexplusplus" "false""#,
             r#"create_app "Codex++ 管理工具" "CodexPlusPlusManager" "$BINARY_DIR/codex-plus-legacy-shim" "com.bigpizzav3.codexplusplus.manager" "true""#,
         ]
     );
@@ -241,7 +243,7 @@ fn macos_dmg_includes_one_visible_app_and_hidden_legacy_updater() {
 
 #[test]
 fn both_companion_names_resolve_to_current_unified_app() {
-    let exe = Path::new("/Applications/Codex++.app/Contents/MacOS/CodexPlusPlus");
+    let exe = Path::new("/Applications/iCodex.app/Contents/MacOS/CodexPlusPlus");
     for binary in [APP_BINARY, MANAGER_BINARY] {
         assert_eq!(companion_binary_path_from_exe(exe, binary), exe);
         assert_eq!(
@@ -254,7 +256,7 @@ fn both_companion_names_resolve_to_current_unified_app() {
 #[test]
 fn legacy_macos_layout_redirects_companions_to_unified_app() {
     for old in [
-        "/Applications/Codex++.app/Contents/MacOS/CodexPlusPlus",
+        "/Applications/iCodex.app/Contents/MacOS/CodexPlusPlus",
         "/Applications/Codex++ 管理工具.app/Contents/MacOS/CodexPlusPlusManager",
     ] {
         for binary in [APP_BINARY, MANAGER_BINARY] {
@@ -262,7 +264,7 @@ fn legacy_macos_layout_redirects_companions_to_unified_app() {
                 companion_binary_path_from_exe(Path::new(old), binary)
                     .to_string_lossy()
                     .replace('\\', "/")
-                    .eq_ignore_ascii_case("/Applications/Codex++.app/Contents/MacOS/CodexPlusPlus")
+                    .eq_ignore_ascii_case("/Applications/iCodex.app/Contents/MacOS/CodexPlusPlus")
             );
             assert_eq!(
                 macos_companion_bundle_identifier_from_exe(Path::new(old), binary),
@@ -272,10 +274,23 @@ fn legacy_macos_layout_redirects_companions_to_unified_app() {
     }
 }
 
+/// 改名前安装的 Codex++.app 仍是本产品：从它启动时直接用自身，不跳去找 iCodex.app。
+#[test]
+fn renamed_legacy_app_is_still_recognized_as_itself() {
+    let exe = Path::new("/Applications/Codex++.app/Contents/MacOS/CodexPlusPlus");
+    for binary in [APP_BINARY, MANAGER_BINARY] {
+        assert_eq!(companion_binary_path_from_exe(exe, binary), exe);
+        assert_eq!(
+            macos_companion_bundle_identifier_from_exe(exe, binary),
+            Some(APP_BUNDLE_ID)
+        );
+    }
+}
+
 #[test]
 fn translocated_unified_app_uses_stable_bundle_id() {
     let exe = Path::new(
-        "/private/var/folders/x/AppTranslocation/id/d/Codex++.app/Contents/MacOS/CodexPlusPlus",
+        "/private/var/folders/x/AppTranslocation/id/d/iCodex.app/Contents/MacOS/CodexPlusPlus",
     );
     assert_eq!(
         macos_companion_bundle_identifier_from_exe(exe, MANAGER_BINARY),
@@ -314,7 +329,7 @@ mod macos_install {
     use super::*;
 
     fn write_native_app(root: &Path) -> Vec<PathBuf> {
-        let contents = root.join("Codex++.app/Contents");
+        let contents = root.join("iCodex.app/Contents");
         let binary = contents.join("MacOS/CodexPlusPlus");
         std::fs::create_dir_all(binary.parent().unwrap()).unwrap();
         let mut bytes = vec![0_u8; 2048];
@@ -323,7 +338,7 @@ mod macos_install {
         std::fs::create_dir_all(contents.join("_CodeSignature")).unwrap();
         std::fs::create_dir_all(contents.join("Resources")).unwrap();
         let plist = contents.join("Info.plist");
-        std::fs::write(&plist, "<plist><dict><key>CodexPlusUnifiedApp</key><true/><key>CFBundleName</key><string>Codex++</string><key>CFBundleIdentifier</key><string>com.bigpizzav3.codexplusplus</string><key>CFBundleExecutable</key><string>CodexPlusPlus</string><key>CFBundleIconFile</key><string>native.icns</string><key>LSUIElement</key><false/></dict></plist>").unwrap();
+        std::fs::write(&plist, "<plist><dict><key>CodexPlusUnifiedApp</key><true/><key>CFBundleName</key><string>iCodex</string><key>CFBundleIdentifier</key><string>com.bigpizzav3.codexplusplus</string><key>CFBundleExecutable</key><string>CodexPlusPlus</string><key>CFBundleIconFile</key><string>native.icns</string><key>LSUIElement</key><false/></dict></plist>").unwrap();
         let signature = contents.join("_CodeSignature/CodeResources");
         std::fs::write(&signature, b"sealed resource sentinel").unwrap();
         let icon = contents.join("Resources/native.icns");
@@ -359,7 +374,7 @@ mod macos_install {
         assert!(
             !root
                 .path()
-                .join("Codex++.app/Contents/MacOS/codex-plus-plus")
+                .join("iCodex.app/Contents/MacOS/codex-plus-plus")
                 .exists()
         );
         assert!(!root.path().join("Codex++ 管理工具.app").exists());
@@ -407,9 +422,9 @@ mod macos_install {
         let root = tempfile::tempdir().unwrap();
         let files = write_native_app(root.path());
         let before_gui = snapshot(&files);
-        let original = root.path().join("Codex++.app");
-        let renamed = root.path().join("Codex++ 2.app");
-        std::fs::rename(root.path().join("Codex++.app"), &renamed).unwrap();
+        let original = root.path().join("iCodex.app");
+        let renamed = root.path().join("iCodex 2.app");
+        std::fs::rename(root.path().join("iCodex.app"), &renamed).unwrap();
         let current = renamed.join("Contents/MacOS/CodexPlusPlus");
         let legacy = write_native_app(root.path());
         let plist = std::fs::read_to_string(&legacy[0]).unwrap().replace(
@@ -447,7 +462,7 @@ mod macos_install {
         let error =
             codex_plus_core::install::macos::native_application_bundle_from_executable(&auxiliary)
                 .unwrap_err();
-        assert!(error.to_string().contains("不是 Codex++ 原生界面的主程序"));
+        assert!(error.to_string().contains("不是 iCodex 原生界面的主程序"));
     }
 
     #[test]
@@ -459,7 +474,7 @@ mod macos_install {
         let error =
             codex_plus_core::install::macos::install_app_bundles(&options(&target, &binary))
                 .unwrap_err();
-        assert!(error.to_string().contains("完整的 Codex++.app"));
+        assert!(error.to_string().contains("完整的 iCodex.app"));
         assert!(!target.exists());
     }
 
@@ -476,7 +491,7 @@ mod macos_install {
         let error =
             codex_plus_core::install::macos::install_app_bundles(&options(root.path(), &files[1]))
                 .unwrap_err();
-        assert!(error.to_string().contains("Codex++ 原生界面包"));
+        assert!(error.to_string().contains("iCodex 原生界面包"));
         assert_eq!(snapshot(&files), before);
     }
 

@@ -4,7 +4,7 @@
    * 数据全部来自 Codex 自己写的 rollout 记录（`event_msg.token_count`），中文档口径
    * 与 Codex 一致：缓存命中 = cached_input_tokens / input_tokens，上下文占用 =
    * last_token_usage.total_tokens / model_context_window。这里的 model_context_window
-   * 正是 Codex++ 注入 model_catalog_json 后 Codex 认到的每模型窗口，所以按模型配置
+   * 正是 iCodex 注入 model_catalog_json 后 Codex 认到的每模型窗口，所以按模型配置
    * 窗口的功能会直接反映在这一项上。
    *
    * 为什么不复用 `/thread-usage-history`：那条路由按会话整读 rollout 并解析全部行，

@@ -637,7 +637,7 @@
               </div>
             </div>
             <div class="csw-command-deck" aria-label="设置操作">
-              ${settingsCommandHtml("open-manager", "open-config", "配置", "在 Codex++ 中配置")}
+              ${settingsCommandHtml("open-manager", "open-config", "配置", "在 iCodex 中配置")}
               ${settingsCommandHtml("test-settings", testing ? "refresh" : "connection", "检查", "检查连接", { disabled: settings?.enabled !== true, busy: testing })}
             </div>
             ${notice ? `<div class="csw-settings-notice" data-tone="${noticeTone}" aria-live="polite">${escapeHtml(notice)}</div>` : ""}
@@ -836,13 +836,13 @@
   async function openManager() {
     if (!isCurrentRuntime()) return;
     const generation = state.runtimeGeneration;
-    state.settingsStatus = "正在打开 Codex++...";
+    state.settingsStatus = "正在打开 iCodex...";
     renderFloat();
     const payload = await bridgeCall("/manager/open-transient", {
       page: "enhance",
       section: "stepwise",
     });
     if (!isCurrentRuntime(generation)) return;
-    state.settingsStatus = payload?.status === "ok" ? "已打开 Codex++" : payload?.message || "打开失败";
+    state.settingsStatus = payload?.status === "ok" ? "已打开 iCodex" : payload?.message || "打开失败";
     renderFloat();
   }

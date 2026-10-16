@@ -7,12 +7,13 @@ use serde::{Deserialize, Serialize};
 pub mod macos;
 pub mod windows;
 
-// 保留旧名称供存量安装识别；新入口统一使用 APP_*。
-pub const APP_NAME: &str = "Codex++";
+// 新入口统一使用 APP_*；改名前的 LEGACY_APP_NAME 只用于识别存量安装（Codex++.app / Codex++.lnk）。
+pub const APP_NAME: &str = "iCodex";
+pub const LEGACY_APP_NAME: &str = "Codex++";
 pub const APP_BINARY: &str = "codex-plus-plus";
 pub const APP_BUNDLE_ID: &str = "com.bigpizzav3.codexplusplus";
 pub const MACOS_APP_EXECUTABLE: &str = "CodexPlusPlus";
-pub const SILENT_NAME: &str = "Codex++";
+pub const SILENT_NAME: &str = "iCodex";
 pub const MANAGER_NAME: &str = "Codex++ 管理工具";
 pub const SILENT_BINARY: &str = "codex-plus-plus";
 pub const MACOS_SILENT_EXECUTABLE: &str = "CodexPlusPlus";
@@ -82,11 +83,16 @@ impl ShortcutState {
 }
 
 pub fn shortcut_names() -> (&'static str, &'static str) {
-    ("Codex++.lnk", "Codex++.lnk")
+    ("iCodex.lnk", "iCodex.lnk")
 }
 
 pub fn app_bundle_names() -> (&'static str, &'static str) {
-    ("Codex++.app", "Codex++.app")
+    ("iCodex.app", "iCodex.app")
+}
+
+/// 应用名是否为本产品（新名或改名前的旧名），用于识别存量安装。
+pub fn is_app_name(name: &str) -> bool {
+    name.eq_ignore_ascii_case(APP_NAME) || name.eq_ignore_ascii_case(LEGACY_APP_NAME)
 }
 
 pub fn inspect_entrypoints() -> EntryPointState {
@@ -168,6 +174,7 @@ pub fn default_install_root() -> Option<PathBuf> {
     {
         let sys_apps = PathBuf::from("/Applications");
         if sys_apps.join(format!("{APP_NAME}.app")).exists()
+            || sys_apps.join(format!("{LEGACY_APP_NAME}.app")).exists()
             || sys_apps.join(format!("{MANAGER_NAME}.app")).exists()
         {
             return Some(sys_apps);
@@ -212,7 +219,7 @@ fn platform_install(options: &InstallOptions) -> anyhow::Result<()> {
     #[cfg(not(any(windows, target_os = "macos")))]
     {
         let _ = options;
-        anyhow::bail!("当前平台暂不支持安装 Codex++ 入口")
+        anyhow::bail!("当前平台暂不支持安装 iCodex 入口")
     }
 }
 
@@ -230,7 +237,7 @@ fn platform_uninstall(options: &InstallOptions) -> anyhow::Result<()> {
     #[cfg(not(any(windows, target_os = "macos")))]
     {
         let _ = options;
-        anyhow::bail!("当前平台暂不支持卸载 Codex++ 入口")
+        anyhow::bail!("当前平台暂不支持卸载 iCodex 入口")
     }
 }
 
@@ -256,14 +263,18 @@ fn entrypoint_candidates(root: &Option<PathBuf>) -> Vec<PathBuf> {
     let Some(root) = root else {
         return Vec::new();
     };
-    let name = APP_NAME;
-    if cfg!(windows) {
-        vec![root.join(format!("{name}.lnk"))]
+    // 新名在前：检测时优先报告新入口，存量的旧名入口同样算已安装。
+    let extension = if cfg!(windows) {
+        "lnk"
     } else if cfg!(target_os = "macos") {
-        vec![root.join(format!("{name}.app"))]
+        "app"
     } else {
-        vec![root.join(format!("{name}.desktop"))]
-    }
+        "desktop"
+    };
+    [APP_NAME, LEGACY_APP_NAME]
+        .iter()
+        .map(|name| root.join(format!("{name}.{extension}")))
+        .collect()
 }
 
 pub(crate) fn application_source(options: &InstallOptions) -> PathBuf {
@@ -357,7 +368,7 @@ pub fn macos_companion_bundle_identifier_from_exe(
     binary: &str,
 ) -> Option<&'static str> {
     let (_, app_name) = macos_applications_dir_and_app_name_from_exe(exe)?;
-    let known_bundle = [APP_NAME, MANAGER_NAME]
+    let known_bundle = [APP_NAME, LEGACY_APP_NAME, MANAGER_NAME]
         .iter()
         .any(|name| app_name.eq_ignore_ascii_case(&format!("{name}.app")));
     if known_bundle && matches!(binary, APP_BINARY | MANAGER_BINARY) {
@@ -377,7 +388,7 @@ pub fn companion_binary_path_from_exe(exe: &Path, binary: &str) -> PathBuf {
         if let Some((applications_dir, app_name)) =
             macos_applications_dir_and_app_name_from_exe(exe)
         {
-            if app_name.eq_ignore_ascii_case(&format!("{APP_NAME}.app")) {
+            if app_name.strip_suffix(".app").is_some_and(is_app_name) {
                 return exe.to_path_buf();
             }
             return applications_dir

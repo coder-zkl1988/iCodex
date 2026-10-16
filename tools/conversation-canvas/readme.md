@@ -1,6 +1,6 @@
 # Conversation Canvas / 对话脉络
 
-An opt-in Codex++ userscript for following a long conversation as a task tree. Open **对话脉络** in the conversation header to view goals, alternative approaches, failed attempts and the current direction on a zoomable canvas. Click a node for its evidence and jump to the original message.
+An opt-in iCodex userscript for following a long conversation as a task tree. Open **对话脉络** in the conversation header to view goals, alternative approaches, failed attempts and the current direction on a zoomable canvas. Click a node for its evidence and jump to the original message.
 
 ## Features
 
@@ -22,10 +22,10 @@ npm run build
 
 The generated script is `public/canvas.user.js`. Builds do not read local conversations or embed annotations. The release is reproducible from this directory alone.
 
-## Install in Codex++
+## Install in iCodex
 
 1. Build the script, or use the generated file included in this directory.
-2. In Codex++ **用户脚本**, install `public/canvas.user.js` and enable it. If updating an existing installation, replace that script rather than enabling a duplicate.
+2. In iCodex **用户脚本**, install `public/canvas.user.js` and enable it. If updating an existing installation, replace that script rather than enabling a duplicate.
 3. Choose **重新加载用户脚本**, return to a task and open **对话脉络** in its header.
 4. Use **整理设置** to choose Codex background organization or enter your API endpoint, model and key. Click **整理脉络** once to process the available history.
 
@@ -43,7 +43,7 @@ The model identifies the tree structure. A saved chain remains a chain; the rend
 - `src/canvas-panel.js`: native header entry, canvas UI and settings; `src/canvas-store.js`: local persistence.
 - `build-userscript.mjs`: dependency-free userscript bundler.
 
-The desktop adapters use private exports and explicitly reviewed build mappings. **Windows Codex Desktop 26.901.6511 with Codex++ 1.2.56** retains the original history, HTTP and background-organization adapters. Version **0.3.3** includes history and HTTP bindings for **Desktop 26.908.9136.0** and adds bindings for **26.915.3509.0**, fixing attempts to import a removed asset after an application update. Background organization on those newer builds is not yet supported: select an external API in settings. Reading history no longer requires the background-submission interface. Unknown builds report an unsupported-version message rather than guessing export names. The new bindings have static bundle inspection and automated fixture coverage; a live desktop end-to-end check remains pending. A future built-in integration should expose stable host APIs for paginated history, background organization and message navigation.
+The desktop adapters use private exports and explicitly reviewed build mappings. **Windows Codex Desktop 26.901.6511 with iCodex 1.2.56** retains the original history, HTTP and background-organization adapters. Version **0.3.3** includes history and HTTP bindings for **Desktop 26.908.9136.0** and adds bindings for **26.915.3509.0**, fixing attempts to import a removed asset after an application update. Background organization on those newer builds is not yet supported: select an external API in settings. Reading history no longer requires the background-submission interface. Unknown builds report an unsupported-version message rather than guessing export names. The new bindings have static bundle inspection and automated fixture coverage; a live desktop end-to-end check remains pending. A future built-in integration should expose stable host APIs for paginated history, background organization and message navigation.
 
 The script covers user/assistant text, not tool output or image semantics. Sending a batch to an external API shares that text with the configured provider. An interrupted request may still incur provider charges; retries can be billed again. Completed batches are retained. No service keys, session files, local diagnostics, extracted desktop bundles or personal annotations are included here.
 

@@ -500,7 +500,7 @@
         if (state.open && before !== `${state.themeMode}:${state.theme}`) renderFloat();
       })
       .catch((error) => {
-        console.warn("[Codex++ Stepwise] Failed to switch Codex theme", error);
+        console.warn("[iCodex Stepwise] Failed to switch Codex theme", error);
       });
   }
 

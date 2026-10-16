@@ -577,7 +577,7 @@
     const testid = candidate.getAttribute("data-testid") || "";
     // Codex 26.1007 changed the visible label from the bare "重命名"/
     // "Rename" to a longer localized label. Match the native semantic
-    // affordance while excluding Codex++'s own auto-rename entry.
+    // affordance while excluding iCodex's own auto-rename entry.
     if (/自动重命名当前会话|auto.?rename current session/i.test(`${text} ${label}`)) return false;
     return /重命名|rename/i.test(`${text} ${label} ${testid}`);
   }
@@ -844,7 +844,7 @@
     item.setAttribute("data-codex-session-copy-menu", "true");
     item.dataset.codexSessionCopyVersion = sessionCopyMenuItemVersion;
     item.__codexSessionCopyRow = row;
-    item.innerHTML = `<div class="flex w-full items-center gap-1.5"><span class="inline-flex h-5 w-5 shrink-0 items-center justify-center opacity-75 group-focus:opacity-100 group-hover:opacity-100">${sessionCopyMenuItemIcon()}</span><span class="flex-1 min-w-0 truncate">原地复制会话 - Codex++</span></div>`;
+    item.innerHTML = `<div class="flex w-full items-center gap-1.5"><span class="inline-flex h-5 w-5 shrink-0 items-center justify-center opacity-75 group-focus:opacity-100 group-hover:opacity-100">${sessionCopyMenuItemIcon()}</span><span class="flex-1 min-w-0 truncate">原地复制会话 - iCodex</span></div>`;
     item.addEventListener("pointerup", activateSessionCopyMenuItem, true);
     item.addEventListener("click", activateSessionCopyMenuItem, true);
     item.addEventListener("keydown", activateSessionCopyMenuItem, true);

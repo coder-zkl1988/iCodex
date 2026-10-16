@@ -106,7 +106,7 @@ const beforeOpen = await evaluate(`(async () => {
     { label: "探针按钮", description: "一个动作", buttonLabel: "执行", onActivate: () => { window.__activations += 1; } },
     { id: "probe-button" },
   );
-  // 打开 Codex++ 菜单
+  // 打开 iCodex 菜单
   document.getElementById("codex-plus-rail-nav")?.querySelector("button")?.click();
   await new Promise((r) => setTimeout(r, 600));
   const panel = document.querySelector('[data-codex-plus-panel="home"]');

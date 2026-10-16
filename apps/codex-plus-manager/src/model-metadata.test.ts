@@ -203,7 +203,7 @@ describe("model metadata helpers", () => {
     );
   });
 
-  it("保留 Codex++ 已填写的显示名称，其他 metadata 采用最新导入值", () => {
+  it("保留 iCodex 已填写的显示名称，其他 metadata 采用最新导入值", () => {
     const replaced = replaceModelMetadataForSlug(
       '{"model-a":{"display_name":"我的模型名","vendor":"old"}}',
       "model-a",
@@ -799,7 +799,7 @@ describe("model metadata helpers", () => {
   });
 
   it("builtinRowBackfillValue 回填空窗口/压缩列且尊重后缀与已填值", () => {
-    // 窗口取内置值；压缩回落 Codex++ 默认 90%（当前内置资产该字段均为 null）
+    // 窗口取内置值；压缩回落 iCodex 默认 90%（当前内置资产该字段均为 null）
     assert.deepStrictEqual(
       builtinRowBackfillValue("kimi-k3", "", "", { context_window: 1_048_576, auto_compact_token_limit: null }),
       { window: "1048576", autoCompact: "90%" },

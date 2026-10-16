@@ -13,12 +13,12 @@ struct BundleSpec {
 }
 
 const BUNDLES: [BundleSpec; 1] = [BundleSpec {
-    name: "Codex++.app",
+    name: "iCodex.app",
     id: "com.bigpizzav3.codexplusplus",
     executable: "CodexPlusPlus",
 }];
 
-const LEGACY_MIGRATION_MESSAGE: &str = "旧双应用布局需手动迁移：下载新版安装包，将完整 Codex++.app 安装到 Applications 后打开；旧版自动更新器不支持单应用安装包，旧入口请确认后自行移除。";
+const LEGACY_MIGRATION_MESSAGE: &str = "旧双应用布局需手动迁移：下载新版安装包，将完整 iCodex.app 安装到 Applications 后打开；旧版自动更新器不支持单应用安装包，旧入口请确认后自行移除。";
 
 fn installed_root_from_executable(executable: &Path) -> anyhow::Result<PathBuf> {
     let root = executable
@@ -26,7 +26,7 @@ fn installed_root_from_executable(executable: &Path) -> anyhow::Result<PathBuf> 
         .and_then(Path::parent)
         .and_then(Path::parent)
         .and_then(Path::parent)
-        .ok_or_else(|| anyhow::anyhow!("请从已安装的 Codex++.app 内更新。"))?;
+        .ok_or_else(|| anyhow::anyhow!("请从已安装的 iCodex.app 内更新。"))?;
     let expected = root
         .join(BUNDLES[0].name)
         .join("Contents/MacOS")
@@ -49,7 +49,7 @@ fn installed_root_from_executable(executable: &Path) -> anyhow::Result<PathBuf> 
             bail!("{LEGACY_MIGRATION_MESSAGE}");
         }
         bail!(
-            "当前应用目录名称不符合自动更新布局；请将完整新版 Codex++.app 手动安装到标准应用目录后更新。"
+            "当前应用目录名称不符合自动更新布局；请将完整新版 iCodex.app 手动安装到标准应用目录后更新。"
         );
     }
     Ok(root.to_path_buf())
@@ -234,7 +234,7 @@ fn replace_bundles(ops: &impl BundleOps, plan: &UpdatePlan) -> anyhow::Result<()
                 backups.display()
             );
         }
-        bail!("更新失败，旧 Codex++ app 已恢复：{error}");
+        bail!("更新失败，旧 iCodex app 已恢复：{error}");
     }
     Ok(())
 }
@@ -519,7 +519,7 @@ mod runtime {
                 return Ok(());
             }
             if Instant::now() >= deadline {
-                bail!("未收到 Codex++ 批准，旧 app 未替换。");
+                bail!("未收到 iCodex 批准，旧 app 未替换。");
             }
             sleep(Duration::from_millis(100));
         }
@@ -548,10 +548,10 @@ mod runtime {
         let start = Instant::now();
         while let Some(path) = process_path(plan.manager_pid)? {
             if path != expected {
-                bail!("Codex++ 进程身份已变化，未替换 app。");
+                bail!("iCodex 进程身份已变化，未替换 app。");
             }
             if start.elapsed() > Duration::from_secs(60) {
-                bail!("等待 Codex++ 正常退出超时，未替换 app。");
+                bail!("等待 iCodex 正常退出超时，未替换 app。");
             }
             sleep(Duration::from_millis(100));
         }
@@ -591,7 +591,7 @@ mod runtime {
             bail!("更新计划的 DMG 不存在。");
         }
         if process_path(plan.manager_pid)?.as_deref() != Some(manager_executable(&root).as_path()) {
-            bail!("启动更新的 Codex++ 会话已失效或不属于本安装目录。");
+            bail!("启动更新的 iCodex 会话已失效或不属于本安装目录。");
         }
         for (index, spec) in BUNDLES.iter().copied().enumerate() {
             let info = validate_bundle(&NativeOps, &root.join(spec.name), spec)?;
@@ -636,7 +636,7 @@ mod runtime {
             BUNDLES[0],
         )?];
         if !super::super::is_newer_version(version, &old_bundles[0].version)? {
-            bail!("更新版本未高于当前 Codex++ 版本。");
+            bail!("更新版本未高于当前 iCodex 版本。");
         }
         let transaction = root.join(format!(".codex-plus-update-{}", uuid::Uuid::new_v4()));
         fs::create_dir(&transaction)
@@ -742,7 +742,7 @@ mod runtime {
             let detached = checked("/usr/bin/hdiutil", &["detach".as_ref(), mount.as_os_str()]);
             prepared?;
             detached?;
-            write_state(&plan, "ready", "Codex++.app 已校验并完整复制，等待程序退出")?;
+            write_state(&plan, "ready", "iCodex.app 已校验并完整复制，等待程序退出")?;
             wait_approval(&plan)?;
             approved = true;
             wait_manager(&plan)?;
@@ -754,7 +754,7 @@ mod runtime {
                 write_state(
                     &plan,
                     "installed",
-                    "Codex++.app 已安装；旧 app 保留在事务 backups 目录",
+                    "iCodex.app 已安装；旧 app 保留在事务 backups 目录",
                 )?;
                 let restarted = (|| -> anyhow::Result<()> {
                     open_bundle(&plan.install_root.join(BUNDLES[0].name))?;
@@ -772,7 +772,7 @@ mod runtime {
             }
             Err(error) => {
                 let _ = write_state(&plan, "failed", &error.to_string());
-                // 只在原 Codex++ 已退出时重开；验证或签名拒绝不改变旧 app。
+                // 只在原 iCodex 已退出时重开；验证或签名拒绝不改变旧 app。
                 if approved && wait_manager(&plan).is_ok() {
                     let _ = open_bundle(&plan.install_root.join(BUNDLES[0].name));
                 }
@@ -825,7 +825,7 @@ mod runtime {
         fs::write(
             path.join("Contents/Info.plist"),
             format!(
-                "<?xml version=\"1.0\"?><plist version=\"1.0\"><dict><key>CodexPlusUnifiedApp</key><true/><key>CFBundleName</key><string>Codex++</string><key>CFBundleIdentifier</key><string>{}</string><key>CFBundleExecutable</key><string>{}</string><key>CFBundleShortVersionString</key><string>{version}</string><key>CFBundleVersion</key><string>{version}</string><key>CFBundlePackageType</key><string>APPL</string><key>LSMinimumSystemVersion</key><string>10.0.0</string></dict></plist>",
+                "<?xml version=\"1.0\"?><plist version=\"1.0\"><dict><key>CodexPlusUnifiedApp</key><true/><key>CFBundleName</key><string>iCodex</string><key>CFBundleIdentifier</key><string>{}</string><key>CFBundleExecutable</key><string>{}</string><key>CFBundleShortVersionString</key><string>{version}</string><key>CFBundleVersion</key><string>{version}</string><key>CFBundlePackageType</key><string>APPL</string><key>LSMinimumSystemVersion</key><string>10.0.0</string></dict></plist>",
                 spec.id, spec.executable,
             ),
         )?;
@@ -966,7 +966,7 @@ mod runtime {
                 bail!("测试 DMG 没有以只读方式挂载");
             }
             prepare_bundles(&NativeOps, &plan, &mount)
-                .context("从真实 DMG 校验/复制 Codex++.app 失败")
+                .context("从真实 DMG 校验/复制 iCodex.app 失败")
         });
         let detached = checked("/usr/bin/hdiutil", &["detach".as_ref(), mount.as_os_str()])
             .context("卸载私有测试 DMG 失败");
@@ -1005,7 +1005,7 @@ mod runtime {
                 target: plan.install_root.join(BUNDLES[0].name),
             };
             let error = replace_bundles(&ops, &plan).unwrap_err();
-            if !error.to_string().contains("旧 Codex++ app 已恢复") {
+            if !error.to_string().contains("旧 iCodex app 已恢复") {
                 return Err(error);
             }
         } else {
@@ -1247,7 +1247,7 @@ mod tests {
             replace_bundles(&ops, &plan)
                 .unwrap_err()
                 .to_string()
-                .contains("旧 Codex++ app 已恢复")
+                .contains("旧 iCodex app 已恢复")
         );
         assert_old_apps(&ops, &plan);
         assert!(
@@ -1276,12 +1276,12 @@ mod tests {
             root.join(bundle).join("Contents/MacOS").join(executable)
         };
         assert_eq!(
-            installed_root_from_executable(&executable_path("Codex++.app", "CodexPlusPlus"))
+            installed_root_from_executable(&executable_path("iCodex.app", "CodexPlusPlus"))
                 .unwrap(),
             root
         );
         assert_eq!(
-            installed_root_from_executable(&executable_path("codex++.app", "CodexPlusPlus"))
+            installed_root_from_executable(&executable_path("icodex.app", "CodexPlusPlus"))
                 .unwrap(),
             root
         );
@@ -1298,7 +1298,7 @@ mod tests {
             );
         }
         let renamed = installed_root_from_executable(&executable_path(
-            "Codex++ 2.app",
+            "iCodex 2.app",
             "CodexPlusPlus",
         ))
         .unwrap_err();

@@ -487,7 +487,7 @@ pub async fn test_connection(settings: &BackendSettings) -> anyhow::Result<Value
         StepwiseRequest {
             last_user_message: "测试下一步建议配置。".to_string(),
             last_assistant_message: "下一步建议应返回 0 到 6 条可直接发送的后续建议。".to_string(),
-            thread_title: "Codex++ 下一步建议测试".to_string(),
+            thread_title: "iCodex 下一步建议测试".to_string(),
             page_url: String::new(),
         },
         settings,

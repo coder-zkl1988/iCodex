@@ -1,4 +1,4 @@
-# Codex++ Share
+# iCodex Share
 
 Cloudflare Pages + Workers KV deployment for encrypted session sharing.
 

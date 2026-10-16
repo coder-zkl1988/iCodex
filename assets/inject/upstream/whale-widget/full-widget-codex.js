@@ -52,7 +52,7 @@ function dshwTryStart(force) {
   return false
 }
 try {
-  if (false) { // Codex++ 已由 enhancement 生命周期判断挂载时机
+  if (false) { // iCodex 已由 enhancement 生命周期判断挂载时机
     // 尚未渲染：MutationObserver 无限等待（v739 去掉原来的「5 秒死线」）。
     // 原来 500ms × 10 次就永久放弃，而 window.__dshWhaleWidget 是一次性闸门 ——
     // 慢启动机器、或页面最小化时定时器被浏览器节流，都会让"第一次没赶上"变成
@@ -3569,7 +3569,7 @@ function openApiModelPanel(modelId) {
     // 密钥
     card.appendChild(apiSec('密钥'))
     var keyRefInp = codexWhaleHost.profileSelect(isNew ? '' : m.keyRef)
-    keyRefInp.title = '复用 Codex++ 已保存的供应商配置，密钥只在本机后端使用'
+    keyRefInp.title = '复用 iCodex 已保存的供应商配置，密钥只在本机后端使用'
     card.appendChild(apiPanelRow('供应商配置', keyRefInp))
     var keyInp = document.createElement('input')
     keyInp.type = 'password'
@@ -3581,7 +3581,7 @@ function openApiModelPanel(modelId) {
     keyInp.style.height = '26px'
     keyInp.style.boxSizing = 'border-box'
     keyInp.style.textAlign = 'left'
-    keyInp.placeholder = '在 Codex++ 供应商配置中管理密钥'
+    keyInp.placeholder = '在 iCodex 供应商配置中管理密钥'
     card.appendChild(apiPanelRow('API key', keyInp))
     var keyState = document.createElement('div')
     keyState.className = 'dshwv-bubhint'
@@ -3598,7 +3598,7 @@ function openApiModelPanel(modelId) {
       })
     })
     delKey.disabled = true
-    delKey.title = '请在 Codex++ 供应商配置中管理密钥'
+    delKey.title = '请在 iCodex 供应商配置中管理密钥'
     var delKeyRow = apiPanelRow('', delKey)
     card.appendChild(delKeyRow)
     // Base URL（中转站/自定义需要）
@@ -14559,7 +14559,7 @@ function configSaveFailNotice(detail) {
   var safe = String(detail || '').slice(0, 120)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   dshwvToast('⚠ 设置保存失败：' + safe +
-    '<br>已自动重试一次。若持续失败，请检查 Codex++ 数据目录是否可写。')
+    '<br>已自动重试一次。若持续失败，请检查 iCodex 数据目录是否可写。')
 }
 function configPayload() {
   return JSON.stringify({ scale: state.scale, sound: soundOn, vol: soundVol, soundSet: soundSet, usageMode: usageMode, peakMode: peakMode, bubbleOn: bubbleOn, turnCostOn: turnCostOn, turnCostCloseMs: turnCostCloseMs, scrollGapOn: scrollGapOn, scrollGapPx: scrollGapPx, menuBtnHide: menuBtnHide, codexStatsOn: codexStatsOn })

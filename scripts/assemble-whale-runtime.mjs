@@ -10,7 +10,7 @@ function patch(before, after) {
   if (source.split(before).length !== 2) throw new Error(`鲸鱼补丁锚点不唯一：${before.slice(0, 80)}`);
   source = source.replace(before, after);
 }
-patch("if (!dshwIsChatRoot(document.getElementById('root'))) {", "if (false) { // Codex++ 已由 enhancement 生命周期判断挂载时机");
+patch("if (!dshwIsChatRoot(document.getElementById('root'))) {", "if (false) { // iCodex 已由 enhancement 生命周期判断挂载时机");
 patch("if (dshwIsChatRoot(document.getElementById('root'))) { dshwStartOnce(); return true }", "if (window.__codexPlusWhaleHost.active()) { dshwStartOnce(); return true }");
 patch("window.__dshWhaleInit = true", "window.__dshWhaleInit = true\nvar codexWhaleHost = window.__codexPlusWhaleHost");
 // Codex 的表单 reset 会隐藏原生 checkbox / range；仅隔离挂件自己的控件。
@@ -37,13 +37,13 @@ patch("function bubbleTplHelpItems(m) {\n  m = m || {}\n  var arr = []\n  functi
 patch("  for (var i = 0; i < defs.length; i++) {", "  for (var cp of [['today','今日'],['week','近7天'],['month','本月'],['all','累计']]) defs.push({ key: 'codex-' + cp[0], label: 'Codex ' + cp[1] + ' token', cb: (function(p,l) { return function() { bubbleModuleAdd({type:'today',modelId:'codex',size:8,tpl:l + ' {tokens_' + p + '} tokens'}) } })(cp[0],cp[1]) })\n  for (var i = 0; i < defs.length; i++) {");
 patch("function bubblePaletteModule(key) {", "function bubblePaletteModule(key) {\n  if (String(key).indexOf('codex-') === 0) return {type:'today',modelId:'codex',size:8,tpl:'{tokens_' + String(key).slice(6) + '} tokens'}");
 patch("var keyRefInp = apiTextInput(isNew ? '' : m.keyRef, '凭据名，例如 OPENROUTER_API_KEY')", "var keyRefInp = codexWhaleHost.profileSelect(isNew ? '' : m.keyRef)");
-patch("keyRefInp.title = '写入 DSH 官方凭据（.credentials.yaml）时使用的名字'", "keyRefInp.title = '复用 Codex++ 已保存的供应商配置，密钥只在本机后端使用'");
+patch("keyRefInp.title = '写入 DSH 官方凭据（.credentials.yaml）时使用的名字'", "keyRefInp.title = '复用 iCodex 已保存的供应商配置，密钥只在本机后端使用'");
 patch("card.appendChild(apiPanelRow('凭据名', keyRefInp))", "card.appendChild(apiPanelRow('供应商配置', keyRefInp))");
 patch("if (!isNew) tplSel.disabled = true", "if (!isNew) tplSel.disabled = true\n    if (m && m.id === 'codex') tplSel.value = 'codex'");
 patch("if (!isNew) {\n      btns.appendChild(apiBtn('删除模型'", "if (!isNew && m.id !== 'codex') {\n      btns.appendChild(apiBtn('删除模型'");
 patch("keyInp.type = 'password'", "keyInp.type = 'password'\n    keyInp.disabled = true");
-patch("keyInp.placeholder = isNew ? '粘贴 API key（保存时写入 DSH 凭据）' : '留空＝不改动现有密钥'", "keyInp.placeholder = '在 Codex++ 供应商配置中管理密钥'");
-patch("var delKeyRow = apiPanelRow('', delKey)", "delKey.disabled = true\n    delKey.title = '请在 Codex++ 供应商配置中管理密钥'\n    var delKeyRow = apiPanelRow('', delKey)");
+patch("keyInp.placeholder = isNew ? '粘贴 API key（保存时写入 DSH 凭据）' : '留空＝不改动现有密钥'", "keyInp.placeholder = '在 iCodex 供应商配置中管理密钥'");
+patch("var delKeyRow = apiPanelRow('', delKey)", "delKey.disabled = true\n    delKey.title = '请在 iCodex 供应商配置中管理密钥'\n    var delKeyRow = apiPanelRow('', delKey)");
 patch("keyRefInp.value = t.keyRef || ''", "keyRefInp.value = keyRefInp.value || (codexWhaleHost.state.relayProfiles[0] || {}).id || ''");
 patch("if (modelId === 'deepseek') usageSet[key] = next", "if (modelId === 'current-provider') usageSet[key] = next");
 patch("if (m.builtin) pTxt += ' ← 内置模型不生效（始终用内置峰谷价）'", "if (m.builtin && m.provider === 'deepseek') pTxt += ' ← 使用该供应商内置峰谷价'");
@@ -73,7 +73,7 @@ patch("function bubblePeakText(m) {", "function bubblePeakText(m) {\n  if (state
 patch("function bubbleCountdownText() {", "function bubbleCountdownText() {\n  if (state.peakSupported !== true) return '未配置峰谷'");
 patch("express()\nrender()\napplySoundSet()", "codexWhaleHost.bind({ root: root, menu: menuBox, refresh: refresh, showBubble: showBubble, playTaskEndSound: playTaskEndSound, pollWaitState: pollWaitState, pollLastTurn: pollLastTurn, openSoundSettings: openSoundSettingsPanel, openBubbleEditor: openBubbleEditor, openResources: openResManager })\nexpress()\nrender()\napplySoundSet()");
 // 只改 Codex 适配说明；DeepSeek 作为可选厂商模板仍保留原名称。
-source = source.replaceAll("DeepSeek（内置）", "当前供应商").replaceAll("DeepSeek 账户余额", "当前供应商账户余额").replaceAll("配置 DeepSeek API key", "配置当前供应商 API").replaceAll("DSH 数据目录", "Codex++ 数据目录").replaceAll("按本机 DSH 会话", "按本机 Codex 会话").replaceAll("DeepSeek 余额", "Codex 用量");
+source = source.replaceAll("DeepSeek（内置）", "当前供应商").replaceAll("DeepSeek 账户余额", "当前供应商账户余额").replaceAll("配置 DeepSeek API key", "配置当前供应商 API").replaceAll("DSH 数据目录", "iCodex 数据目录").replaceAll("按本机 DSH 会话", "按本机 Codex 会话").replaceAll("DeepSeek 余额", "Codex 用量");
 const generated = "// 此文件由 scripts/assemble-whale-runtime.mjs 从上游完整源码生成，请修改生成器。\n" + source;
 const output = new URL("full-widget-codex.js", root);
 if (process.argv.includes("--check")) {

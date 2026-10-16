@@ -301,7 +301,7 @@ pub fn save_validated_dream_skin_package(
     package: &crate::dream_skin_package::ValidatedDreamSkinPackage,
 ) -> anyhow::Result<DreamSkinThemeSummary> {
     let config: DreamSkinThemeConfig = serde_json::from_value(package.theme.clone())
-        .context("主题包 theme.json 与 Codex++ 主题配置不兼容")?;
+        .context("主题包 theme.json 与 iCodex 主题配置不兼容")?;
     let draft = DreamSkinThemeDraft {
         config: config.clone(),
         image_path: String::new(),

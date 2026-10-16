@@ -554,7 +554,7 @@ pub struct LaunchRequest {
 ///
 /// 这个入口故意不复用 `launch_codex_plus`：后者只管理默认 CODEX_HOME，且
 /// launcher/helper 的生命周期是单例。多开实例通过隐藏 worker 进程复用完整的
-/// Codex++ launcher/injection 链，并给每个供应商分配独立的 CODEX_HOME、SQLite、
+/// iCodex launcher/injection 链，并给每个供应商分配独立的 CODEX_HOME、SQLite、
 /// Electron user-data-dir 和 CDP/helper 端口。
 #[derive(Debug, Clone, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -581,7 +581,7 @@ pub struct CodexMultiWorkerOptions {
     pub app_path: String,
     pub debug_port: u16,
     pub helper_port: u16,
-    /// 实例自己的 Codex++ 状态目录。
+    /// 实例自己的 iCodex 状态目录。
     ///
     /// 多开隔离原先靠给 worker 换 `HOME`，但这只在 Unix 成立：`directories` 在
     /// Windows 上用 `SHGetKnownFolderPath(FOLDERID_Profile)`，完全不读 `HOME`，
@@ -1689,7 +1689,7 @@ fn multi_worker_process_matches(pid: u32, options_path: &Path) -> bool {
 /// Hidden child process used by Codex multi-launch. Its environment is isolated
 /// before this function is called, so the normal launcher can safely use its
 /// existing default-home/settings/helper/bridge code without touching the main
-/// Codex++ instance.
+/// iCodex instance.
 ///
 /// 就绪校验（issue：多开在 Windows 上静默失败）：
 /// launcher 的 `start` 只保证「激活流程走完」，不代表 Codex 真的起来了。
@@ -2045,7 +2045,7 @@ pub fn launch_in_progress() -> bool {
 /// 临时状态。
 pub fn run_auto_takeover_launch(request: LaunchRequest) -> Result<(), String> {
     if crate::app_is_exiting() {
-        return Err("Codex++ 正在退出，未启动 Codex".to_string());
+        return Err("iCodex 正在退出，未启动 Codex".to_string());
     }
     let launch_options = codex_plus_launcher::LaunchOptions {
         app_dir: (!request.app_path.trim().is_empty())
@@ -2215,7 +2215,7 @@ fn restart_codex_plus_blocking(request: LaunchRequest) -> CommandResult<Value> {
     if let Err(error) = save_requested_launch_status(
         &request,
         "starting",
-        "Codex++ launcher is starting",
+        "iCodex launcher is starting",
         launch_started_at_ms,
     ) {
         return failed(
@@ -2550,7 +2550,7 @@ fn spawn_codex_plus_launch(request: LaunchRequest, accepted_message: &str) -> Co
     if let Err(error) = save_requested_launch_status(
         &request,
         "starting",
-        "Codex++ launcher is starting",
+        "iCodex launcher is starting",
         launch_started_at_ms,
     ) {
         return failed(
@@ -2674,7 +2674,7 @@ fn current_timestamp_ms() -> u64 {
 }
 
 fn start_embedded_launcher(request: &LaunchRequest) -> anyhow::Result<()> {
-    anyhow::ensure!(!crate::app_is_exiting(), "Codex++ 正在退出，未启动 Codex");
+    anyhow::ensure!(!crate::app_is_exiting(), "iCodex 正在退出，未启动 Codex");
     codex_plus_launcher::start(codex_plus_launcher::LaunchOptions {
         app_dir: (!request.app_path.trim().is_empty())
             .then(|| PathBuf::from(request.app_path.trim())),
@@ -3006,7 +3006,7 @@ pub fn find_desktop_codex_cli() -> CommandResult<Value> {
                 json!({ "path": path.to_string_lossy() }),
             ),
             None => failed(
-                "未找到可运行的桌面版内置 Codex CLI。请先通过 Codex++ 启动一次 Codex 桌面版后重试，\
+                "未找到可运行的桌面版内置 Codex CLI。请先通过 iCodex 启动一次 Codex 桌面版后重试，\
                  或将「Codex CLI 路径」留空自动查找。",
                 json!({ "path": null }),
             ),
@@ -4038,7 +4038,7 @@ fn managed_dream_skin_image_backup(
     state_dir: &Path,
 ) -> anyhow::Result<ManagedDreamSkinImageBackup> {
     if !codex_plus_core::dream_skin::is_managed_dream_skin_image(path, state_dir) {
-        anyhow::bail!("Dream Skin image is not managed by Codex++");
+        anyhow::bail!("Dream Skin image is not managed by iCodex");
     }
     Ok(ManagedDreamSkinImageBackup {
         path: path.to_path_buf(),
@@ -4368,7 +4368,7 @@ fn local_session_adapter(db_path: &Path) -> codex_plus_data::SQLiteStorageAdapte
 ///
 /// 之前的写法是 normalize 成功才覆盖、失败就原样保留，于是误选的路径会被存进
 /// settings.json。而 launcher 拿到显式 --app-path 且无效时不回退自动探测，
-/// 结果就是启动永久失败、只能手改配置文件才能恢复（#1972：用户误选了 Codex++
+/// 结果就是启动永久失败、只能手改配置文件才能恢复（#1972：用户误选了 iCodex
 /// 自己的 codex-plus-plus.exe，因为文件选择器只按 exe 扩展名过滤）。
 ///
 /// 清空之后 resolve_codex_app_dir_with_saved 会走自动探测，至少还能起来。
@@ -5668,7 +5668,7 @@ async fn perform_update_inner(
     match codex_plus_core::update::perform_update(&release, &download_dir).await {
         Ok(result) => ok(
             if cfg!(target_os = "macos") {
-                "安装包已验证，Codex++ 将关闭以安装更新，完成后自动重启；失败时保留旧版。"
+                "安装包已验证，iCodex 将关闭以安装更新，完成后自动重启；失败时保留旧版。"
             } else {
                 "安装包已下载并启动，请按安装向导完成更新。"
             },
@@ -5698,7 +5698,7 @@ pub fn load_watcher_state() -> CommandResult<WatcherPayload> {
     ok("开机启动状态已加载。", watcher_payload())
 }
 
-/// 界面上的「开机打开 Codex++」开关：开启 = 注册并启用，关闭 = 注销并禁用。
+/// 界面上的「开机打开 iCodex」开关：开启 = 注册并启用，关闭 = 注销并禁用。
 #[tauri::command]
 pub fn set_watcher_enabled(enabled: bool) -> CommandResult<WatcherPayload> {
     let launcher_path =
@@ -9522,15 +9522,15 @@ enabled = true
     }
 
     #[test]
-    /// #1972：用户误把 Codex++ 自己的 exe 选成了「Codex 应用路径」——文件选择器
+    /// #1972：用户误把 iCodex 自己的 exe 选成了「Codex 应用路径」——文件选择器
     /// 只按 exe 扩展名过滤，拦不住。以前无效路径会原样存进 settings.json，而
     /// launcher 拿到显式无效 --app-path 又不回退自动探测，于是启动永久失败，
     /// 只能手改配置文件才能恢复。
     fn normalize_settings_before_save_drops_an_invalid_codex_app_path() {
         let codex_plus_own_exe = if cfg!(windows) {
-            r"D:\Codex++\codex-plus-plus.exe"
+            r"D:\iCodex\codex-plus-plus.exe"
         } else {
-            "/Applications/Codex++/codex-plus-plus"
+            "/Applications/iCodex/codex-plus-plus"
         };
         let settings = BackendSettings {
             codex_app_path: codex_plus_own_exe.to_string(),
@@ -9542,7 +9542,7 @@ enabled = true
         // 清空而不是留着：留着就会被当成显式 --app-path 传下去，永久失败
         assert!(
             normalized.codex_app_path.is_empty(),
-            "指向 Codex++ 自身的路径不该落库，实际是 {}",
+            "指向 iCodex 自身的路径不该落库，实际是 {}",
             normalized.codex_app_path
         );
     }

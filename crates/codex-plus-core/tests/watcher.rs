@@ -56,7 +56,7 @@ fn macos_launch_agent_registers_the_gui_at_login() {
     let home = tempfile::tempdir().unwrap();
     let launcher = home
         .path()
-        .join("Codex++.app/Contents/MacOS/CodexPlusPlus");
+        .join("iCodex.app/Contents/MacOS/CodexPlusPlus");
     assert!(!macos_launch_agent_installed_at(home.path()));
 
     let path = write_macos_launch_agent_at(home.path(), &launcher).unwrap();
@@ -344,7 +344,7 @@ fn find_codex_processes_ignores_unrelated_processes() {
             parent_process_id: 0,
             exe_file: "codex-plus-plus.exe".to_string(),
             executable_path: Some(std::path::PathBuf::from(
-                r"D:\Programs\Codex++\codex-plus-plus.exe",
+                r"D:\Programs\iCodex\codex-plus-plus.exe",
             )),
         },
     ];

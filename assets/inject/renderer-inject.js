@@ -349,7 +349,7 @@
   const codexPlusSidebarNavId = "codex-plus-sidebar-nav";
   const codexPlusPageClass = "codex-plus-page-overlay";
   // 新版 Codex 在最左侧多出一条导航图标栏（navigation rail）。
-  // 三个入口分别挂进去：Codex++ 主页、「拓展」（原用户脚本）和「推荐内容」。
+  // 三个入口分别挂进去：iCodex 主页、「拓展」（原用户脚本）和「推荐内容」。
   // 三者各自是一个独立页面，不再作为弹窗里的二级 tab。
   const codexPlusRailNavId = "codex-plus-rail-nav";
   const codexPlusRailExtensionsId = "codex-plus-rail-extensions";
@@ -1744,7 +1744,7 @@
    * 生命周期约定（很重要）：
    *   注册表持久，DOM 瞬态。
    *
-   * Codex++ 的 UI 宿主会被反复重建（overlay 每次打开都清空重建、会话行按钮在
+   * iCodex 的 UI 宿主会被反复重建（overlay 每次打开都清空重建、会话行按钮在
    * 版本号变化时整组重建），所以任何消费方都不能缓存 DOM 引用，必须每次从注册
    * 表读数据全量重建。反过来说，第三方脚本不需要关心 DOM 何时被销毁。
    *
@@ -1765,7 +1765,7 @@
   /**
    * 必须被扫描调度忽略的选择器。
    *
-   * 这些节点由 Codex++ 自己（或拓展）插入到 Codex 的容器里，而容器本身是
+   * 这些节点由 iCodex 自己（或拓展）插入到 Codex 的容器里，而容器本身是
    * scan-relevant 的。如果不排除，就会形成「写入 → 观察到自己的写入 → 200ms
    * 后再 scan → 再写入」的自喂循环：空闲时也每秒全量扫描五次，macOS 上足以
    * 吃满一个核（issue #1960）。
@@ -2314,7 +2314,7 @@
       .codex-plus-plugin-empty { padding: 40px 16px; text-align: center; color: var(--codex-plus-text-secondary); }
       @media (max-width: 600px) { .codex-plus-plugin-card { flex-direction: column; gap: 10px; } .codex-plus-plugin-install { align-self: flex-end; } }
       /*
-       * 新版导航图标栏里的 Codex++ / 拓展 / 推荐内容入口：原生按钮只放图标，
+       * 新版导航图标栏里的 iCodex / 拓展 / 推荐内容入口：原生按钮只放图标，
        * 这里对齐它的尺寸。
        *
        * 用 [data-codex-plus-rail] 而不是逐个列 id——早先按 id 写，加第三个入口时
@@ -3238,7 +3238,7 @@
       .codex-plus-form-message[data-status="failed"], .codex-plus-service-tier-status[data-status="failed"], .codex-plus-backend-label[data-status="failed"] { color: var(--codex-plus-danger); }
       .codex-plus-backend-label[data-status="degraded"] { color: var(--codex-plus-warning); }
       .codex-plus-form-message[data-status="loading"], .codex-plus-service-tier-status[data-status="unsupported"], .codex-plus-model-compat-warning { color: var(--codex-plus-warning); }
-      /* Codex++ 设置主页：对齐原生设置页，保持其它页面与弹窗的布局独立。 */
+      /* iCodex 设置主页：对齐原生设置页，保持其它页面与弹窗的布局独立。 */
       .${codexPlusPageClass} .codex-plus-modal-content[data-codex-plus-active-tab="home"] {
         background: var(--codex-plus-settings-page-bg, var(--codex-plus-bg-primary)) !important;
       }
@@ -6294,7 +6294,7 @@
         new Promise((_, reject) => {
           timeoutId = setTimeout(() => {
             sendCodexPlusDiagnostic("app_server_preparation_read_timeout", { path, timeoutMs });
-            reject(new Error(`Codex++ preparation read timed out: ${path}`));
+            reject(new Error(`iCodex preparation read timed out: ${path}`));
           }, timeoutMs);
         }),
       ]);
@@ -6461,7 +6461,7 @@
     if (codexPlusBackendStatus.version) {
       codexPlusVersion = codexPlusBackendStatus.version;
       document.querySelectorAll("[data-codex-plus-version]").forEach((node) => {
-        node.textContent = `Codex++ ${codexPlusVersion}`;
+        node.textContent = `iCodex ${codexPlusVersion}`;
       });
     }
     const labelFallback = status === "ok" ? "后端已连接" : status === "degraded" ? "桥接降级，自动修复中" : status === "checking" ? "正在检查后端…" : "未连接";
@@ -6772,7 +6772,7 @@
     refreshCodexPlusExtensionsView();
   }
 
-  /** 左面板的导航项。Codex++ 页面切分组，「拓展」页面列脚本。 */
+  /** 左面板的导航项。iCodex 页面切分组，「拓展」页面列脚本。 */
   function renderCodexPlusPageNavItems(tab) {
     if (tab === codexPlusExtensionsTab) return renderCodexPlusExtensionsNav();
     return [
@@ -6823,7 +6823,7 @@
   function codexPlusPageTitle(tab) {
     if (tab === codexPlusExtensionsTab) return "拓展";
     if (tab === codexPlusSponsorTab) return "推荐内容";
-    return "Codex++";
+    return "iCodex";
   }
 
   /** 左面板内容随当前分组刷新（切 tab 后调用）。 */
@@ -6831,7 +6831,7 @@
     const body = document.querySelector("[data-codex-plus-page-nav-body]");
     if (!body) return;
     const title = document.querySelector(".codex-plus-page-nav-title");
-    if (title) title.textContent = tab === codexPlusExtensionsTab ? "拓展" : "Codex++";
+    if (title) title.textContent = tab === codexPlusExtensionsTab ? "拓展" : "iCodex";
     body.innerHTML = renderCodexPlusPageNavItems(tab);
   }
 
@@ -7419,7 +7419,7 @@
   /**
    * 规范化页面/tab 名。
    *
-   * 用户脚本从 Codex++ 弹窗里拆出来成了独立的「拓展」页面，
+   * 用户脚本从 iCodex 弹窗里拆出来成了独立的「拓展」页面，
    * 这里把旧名 userScripts 也映射过去，避免存量调用点失效。
    */
   function codexPlusModalTab(tab) {
@@ -7516,9 +7516,9 @@
     applyCodexPlusZoom(overlay);
     // 下拉箭头与勾选图标使用已安装的 Lucide ChevronDown / Check（ISC）路径。
     overlay.innerHTML = `
-      <div class="codex-plus-modal-content" role="dialog" aria-modal="true" aria-label="Codex++">
+      <div class="codex-plus-modal-content" role="dialog" aria-modal="true" aria-label="iCodex">
         <div class="codex-plus-modal-header">
-          <div class="codex-plus-modal-title"><span class="codex-plus-backend-indicator" data-codex-backend-indicator="true" data-status="checking"></span><span data-codex-plus-version="true">Codex++ ${codexPlusVersion}</span></div>
+          <div class="codex-plus-modal-title"><span class="codex-plus-backend-indicator" data-codex-backend-indicator="true" data-status="checking"></span><span data-codex-plus-version="true">iCodex ${codexPlusVersion}</span></div>
           ${pageMode ? "" : `<button type="button" class="codex-plus-modal-close" aria-label="关闭">×</button>`}
         </div>
         <div class="codex-plus-modal-body">
@@ -7585,7 +7585,7 @@
                   <button type="button" class="codex-plus-toggle" data-codex-plus-setting="answerOutline"><span></span></button>
                 </div>
                 <div class="codex-plus-row">
-                  <div><div class="codex-plus-row-title">容量错误自动重试</div><div class="codex-plus-row-description">模型容量不足时（横幅文案如 “Selected model is at capacity”），自动点「重试」。Codex 原生只会自动重试 4 次，之后只剩手动按钮；开启后由 Codex++ 立刻接管（原生倒计时也一并接管，前 4 次同样不等它），直到成功或达到次数上限。间隔 0 秒表示失败后立刻重试（内部最小 1 秒，避免连发）。</div></div>
+                  <div><div class="codex-plus-row-title">容量错误自动重试</div><div class="codex-plus-row-description">模型容量不足时（横幅文案如 “Selected model is at capacity”），自动点「重试」。Codex 原生只会自动重试 4 次，之后只剩手动按钮；开启后由 iCodex 立刻接管（原生倒计时也一并接管，前 4 次同样不等它），直到成功或达到次数上限。间隔 0 秒表示失败后立刻重试（内部最小 1 秒，避免连发）。</div></div>
                   <div class="codex-plus-width-control">
                     <input class="codex-plus-width-input" data-codex-plus-capacity-retry-interval="true" min="0" max="${capacityAutoRetryIntervalCeilingSeconds}" step="1" type="number" value="${capacityAutoRetryIntervalSeconds()}" title="重试间隔（秒），0 表示立刻重试" aria-label="重试间隔（秒）">
                     <input class="codex-plus-width-input" data-codex-plus-capacity-retry-max-attempts="true" min="1" max="${capacityAutoRetryMaxAttemptsCeiling}" step="1" type="number" value="${capacityAutoRetryMaxAttempts()}" title="最大自动重试次数" aria-label="最大自动重试次数">
@@ -7667,7 +7667,7 @@
                   <button type="button" class="codex-plus-action-button" data-codex-open-devtools="true">打开 DevTools</button>
                 </div>
                 <div class="codex-plus-row">
-                  <div><div class="codex-plus-row-title">关于 Codex++</div><div class="codex-plus-about">Codex++ 是通过外部 launcher 注入的增强菜单，不修改 Codex App 原始安装文件。<br>Build: <span data-codex-plus-build="true">${codexPlusBuild}</span><br>GitHub: <a href="https://github.com/BigPizzaV3/CodexPlusPlus" target="_blank" rel="noreferrer">https://github.com/BigPizzaV3/CodexPlusPlus</a><br>Discord: <a href="https://discord.gg/y96kX7A76v" target="_blank" rel="noreferrer">https://discord.gg/y96kX7A76v</a><br>Telegram: <a href="https://t.me/CodexPlusPlus" target="_blank" rel="noreferrer">https://t.me/CodexPlusPlus</a></div></div>
+                  <div><div class="codex-plus-row-title">关于 iCodex</div><div class="codex-plus-about">iCodex 是通过外部 launcher 注入的增强菜单，不修改 Codex App 原始安装文件。<br>Build: <span data-codex-plus-build="true">${codexPlusBuild}</span><br>GitHub: <a href="https://github.com/BigPizzaV3/CodexPlusPlus" target="_blank" rel="noreferrer">https://github.com/BigPizzaV3/CodexPlusPlus</a><br>Discord: <a href="https://discord.gg/y96kX7A76v" target="_blank" rel="noreferrer">https://discord.gg/y96kX7A76v</a><br>Telegram: <a href="https://t.me/CodexPlusPlus" target="_blank" rel="noreferrer">https://t.me/CodexPlusPlus</a></div></div>
                 </div>
                 <div class="codex-plus-row">
                   <div><div class="codex-plus-row-title">Discord 社区</div><div class="codex-plus-row-description">加入 Discord 获取更新消息、反馈问题或交流使用体验。</div></div>
@@ -7700,7 +7700,7 @@
           <div class="codex-plus-panel" data-codex-plus-panel="sponsor" hidden>
             <div class="codex-plus-discovery codex-plus-sponsor-page">
               <div class="codex-plus-discovery-header">
-                <div><h1 class="codex-plus-discovery-title">推荐内容</h1><p class="codex-plus-discovery-description codex-plus-sponsor-text">以下推荐来自支持 Codex++ 继续维护的合作方。</p></div>
+                <div><h1 class="codex-plus-discovery-title">推荐内容</h1><p class="codex-plus-discovery-description codex-plus-sponsor-text">以下推荐来自支持 iCodex 继续维护的合作方。</p></div>
               </div>
               <h2 class="codex-plus-discovery-section-title">合作伙伴</h2>
               <div class="codex-plus-ad-remote">${renderCodexPlusAds()}</div>
@@ -7948,7 +7948,7 @@
     if (!codexPlusAdsLoaded) fetchCodexPlusAds();
     selectCodexPlusTab(initialTab);
     // 必须在 selectCodexPlusTab 之后：激活态要靠 data-codex-plus-active-tab
-    // 判断当前是 Codex++ 还是「拓展」，提前调用会永远落到 home 上。
+    // 判断当前是 iCodex 还是「拓展」，提前调用会永远落到 home 上。
     if (pageMode) setCodexPlusSidebarNavActive(true, codexPlusActiveEntry() || "home");
     renderCodexPlusMenu();
     refreshCodexPlusBackendToggles();
@@ -8047,9 +8047,9 @@
       button.removeAttribute("aria-current");
       button.removeAttribute("disabled");
       button.removeAttribute("aria-disabled");
-      button.setAttribute("aria-label", "Codex++");
+      button.setAttribute("aria-label", "iCodex");
       button.textContent = "";
-      button.innerHTML = `<span class="codex-plus-sidebar-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M5.5 5.5l13 13M18.5 5.5l-13 13"/></svg></span><span class="truncate">Codex++</span><span class="codex-plus-sidebar-nav-status" data-status="${codexPlusBackendStatus.status || "checking"}" aria-hidden="true"></span>`;
+      button.innerHTML = `<span class="codex-plus-sidebar-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M5.5 5.5l13 13M18.5 5.5l-13 13"/></svg></span><span class="truncate">iCodex</span><span class="codex-plus-sidebar-nav-status" data-status="${codexPlusBackendStatus.status || "checking"}" aria-hidden="true"></span>`;
       button.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -8147,7 +8147,7 @@
   }
 
   /**
-   * 把 Codex++ / 拓展两个入口挂到新版图标栏。
+   * 把 iCodex / 拓展两个入口挂到新版图标栏。
    *
    * Codex 的 rail 渲染晚于注入，所以这里每次 scan 都会被调用；靠 id 判存避免重复插入。
    */
@@ -8159,7 +8159,7 @@
     // 那只是暂时状态，不能因此判定"没有 rail"而回退旧模式，否则入口会整个消失。
     const template = codexPlusRailTemplateButton(rail);
 
-    // 旧逻辑把"点原生导航就关掉 Codex++ 页面"的监听挂在侧边栏的 navigation 上，
+    // 旧逻辑把"点原生导航就关掉 iCodex 页面"的监听挂在侧边栏的 navigation 上，
     // 但 rail 模式下那个函数会提前 return，监听压根装不上，所以这里补一份。
     if (rail.dataset.codexPlusRailNavigationListener !== "true") {
       rail.dataset.codexPlusRailNavigationListener = "true";
@@ -8183,7 +8183,7 @@
     };
 
     const specs = [
-      { id: codexPlusRailNavId, label: "Codex++", iconMarkup: icons.home, withStatus: true, onActivate: openCodexPlusPage },
+      { id: codexPlusRailNavId, label: "iCodex", iconMarkup: icons.home, withStatus: true, onActivate: openCodexPlusPage },
       { id: codexPlusRailExtensionsId, label: "拓展", iconMarkup: icons.extensions, withStatus: false, onActivate: openCodexPlusExtensions },
       { id: codexPlusRailSponsorId, label: "推荐内容", iconMarkup: icons.sponsor, withStatus: false, onActivate: openCodexPlusSponsor },
     ];
@@ -8200,7 +8200,7 @@
         wrapper = createCodexPlusRailButton({ ...spec, template });
         if (!wrapper) return;
       }
-      // 顺序：Codex++ 在前，「拓展」在后；紧跟在 primary 区锚点后面。
+      // 顺序：iCodex 在前，「拓展」在后；紧跟在 primary 区锚点后面。
       if (cursor?.nextSibling) {
         host.insertBefore(wrapper, cursor.nextSibling);
       } else if (cursor) {
@@ -8303,19 +8303,19 @@
   }
 
   function displayNameForPluginMarketplaceName(name, fallback) {
-    if (name === "openai-bundled") return "OpenAI插件1(Codex++)";
-    if (name === "openai-curated") return "OpenAI插件2(Codex++)";
-    if (name === "openai-primary-runtime") return "OpenAI插件3(Codex++)";
-    if (name === "openai-api-curated") return "OpenAI插件4(Codex++)";
+    if (name === "openai-bundled") return "OpenAI插件1(iCodex)";
+    if (name === "openai-curated") return "OpenAI插件2(iCodex)";
+    if (name === "openai-primary-runtime") return "OpenAI插件3(iCodex)";
+    if (name === "openai-api-curated") return "OpenAI插件4(iCodex)";
     // 兼容原生返回的既有旧配置名称；这里不会注入、缓存或注册插件市场。
-    if (name === "codex-plus-curated" || name === "openai-curated-remote") return "OpenAI插件5(Codex++)";
+    if (name === "codex-plus-curated" || name === "openai-curated-remote") return "OpenAI插件5(iCodex)";
     return fallback;
   }
 
   function patchPluginMarketplaceObject(marketplace) {
     if (!marketplace || typeof marketplace !== "object" || marketplace.__codexPlusMarketplaceUnlockPatched) return false;
     // 上游已经给了显示名就用上游的（issue #692：此前无条件用上面的中文编号覆盖，
-    // 用户看到的是「OpenAI插件1(Codex++)」而不是市场真实名字）。
+    // 用户看到的是「OpenAI插件1(iCodex)」而不是市场真实名字）。
     // 编号映射只在市场上游确实没给显示名时兜底；去重仍走 restorePluginMarketplaceName，
     // 与显示名无关，所以不会因此退回重复条目。
     const upstreamDisplayName = marketplace.displayName || marketplace.title || marketplace.label || "";
@@ -13860,7 +13860,7 @@
    *
    *   本分片补上的就是这一段：横幅还在、原生又不再自动重试时，替用户点按钮。
    *   节奏默认与手动点击一致——上一轮失败后立刻重试（0 秒间隔，内部有 1 秒地板值
-   *   防热循环），间隔和次数上限都可以在 Codex++ 设置里改。
+   *   防热循环），间隔和次数上限都可以在 iCodex 设置里改。
    *
    *   原生那 4 档阶梯（10/30/120/300 秒）不是我们复刻的对象，也不等待：倒计时显示
    *   「10 秒后重试」时本功能同样在下一秒就把按钮点掉，等于把原生那 4 次也压成 0 秒。
@@ -14289,7 +14289,7 @@
    * 数据全部来自 Codex 自己写的 rollout 记录（`event_msg.token_count`），中文档口径
    * 与 Codex 一致：缓存命中 = cached_input_tokens / input_tokens，上下文占用 =
    * last_token_usage.total_tokens / model_context_window。这里的 model_context_window
-   * 正是 Codex++ 注入 model_catalog_json 后 Codex 认到的每模型窗口，所以按模型配置
+   * 正是 iCodex 注入 model_catalog_json 后 Codex 认到的每模型窗口，所以按模型配置
    * 窗口的功能会直接反映在这一项上。
    *
    * 为什么不复用 `/thread-usage-history`：那条路由按会话整读 rollout 并解析全部行，
@@ -14900,7 +14900,7 @@
         }));
       }
       if (sessionMenuEnabled) {
-        const sessionCopyItem = createSessionMoreMenuItem("原地复制会话 - Codex++", "⧉", activateSessionCopyMenuItem);
+        const sessionCopyItem = createSessionMoreMenuItem("原地复制会话 - iCodex", "⧉", activateSessionCopyMenuItem);
         sessionCopyItem.dataset.codexSessionCopyMenu = "true";
         sessionCopyItem.dataset.codexSessionCopyVersion = sessionCopyMenuItemVersion;
         sessionCopyItem.__codexSessionCopyRow = row;
@@ -15765,7 +15765,7 @@
   /**
    * 对外接口层：window.codexPlus
    *
-   * 第三方用户脚本不认识 Codex++ 内部的闭包函数，只能通过这个对象调用能力。
+   * 第三方用户脚本不认识 iCodex 内部的闭包函数，只能通过这个对象调用能力。
    * 设计要点：
    *
    *   1. 只挂一个全局名。之前 42 个 window.__codexPlus* 里绝大多数是补丁哨兵，
@@ -15773,7 +15773,7 @@
    *   2. 注册表持久、DOM 瞬态。每个 register* 只把数据写进注册中心，渲染由消费方
    *      负责。第三方不需要关心宿主何时重建（overlay 重开、会话行重建）。
    *   3. 失败隔离。第三方回调一律经 runCodexPlusExtensionCallback 包一层，抛错
-   *      记进该脚本的状态通道，不会让 Codex++ 自己的 UI 白屏。
+   *      记进该脚本的状态通道，不会让 iCodex 自己的 UI 白屏。
    *
    * 这个分片必须在 renderer-inject 内部的所有 UI 消费方之前执行，因为它只做定义、
    * 不读 DOM；实际挂载发生在 99-tail 之前，那时所有依赖函数都已可用。
@@ -15966,13 +15966,13 @@
       },
 
       /**
-       * 在 Codex++ 菜单的「主页」面板里加一行。
+       * 在 iCodex 菜单的「主页」面板里加一行。
        *
        * 两种形态，按 definition 里给的字段决定：
        *   - 开关：给 `onChange(next)`，可选 `toggleValue()` 提供当前值
        *   - 按钮：给 `onActivate({ close })`
        *
-       * 这些是 Codex++ 自己的设置面板，改动会立刻反映到当前打开的菜单上；
+       * 这些是 iCodex 自己的设置面板，改动会立刻反映到当前打开的菜单上；
        * 菜单重新打开时会从 `toggleValue()` 重新读一次状态。
        */
       registerMenuItem(definition, options = {}) {
@@ -15982,7 +15982,7 @@
       /**
        * 注册一个整页视图。
        *
-       * 同时自动配一个图标栏入口——内置的三个页面（Codex++ / 拓展 / 推荐内容）
+       * 同时自动配一个图标栏入口——内置的三个页面（iCodex / 拓展 / 推荐内容）
        * 都是「rail 入口 + 整页」的形态，第三方页面沿用同一种形态，用户才不会
        * 在弹窗里找入口。`options.navLabel` / `options.icon` 控制入口外观。
        *
@@ -17911,7 +17911,7 @@
     const testid = candidate.getAttribute("data-testid") || "";
     // Codex 26.1007 changed the visible label from the bare "重命名"/
     // "Rename" to a longer localized label. Match the native semantic
-    // affordance while excluding Codex++'s own auto-rename entry.
+    // affordance while excluding iCodex's own auto-rename entry.
     if (/自动重命名当前会话|auto.?rename current session/i.test(`${text} ${label}`)) return false;
     return /重命名|rename/i.test(`${text} ${label} ${testid}`);
   }
@@ -18178,7 +18178,7 @@
     item.setAttribute("data-codex-session-copy-menu", "true");
     item.dataset.codexSessionCopyVersion = sessionCopyMenuItemVersion;
     item.__codexSessionCopyRow = row;
-    item.innerHTML = `<div class="flex w-full items-center gap-1.5"><span class="inline-flex h-5 w-5 shrink-0 items-center justify-center opacity-75 group-focus:opacity-100 group-hover:opacity-100">${sessionCopyMenuItemIcon()}</span><span class="flex-1 min-w-0 truncate">原地复制会话 - Codex++</span></div>`;
+    item.innerHTML = `<div class="flex w-full items-center gap-1.5"><span class="inline-flex h-5 w-5 shrink-0 items-center justify-center opacity-75 group-focus:opacity-100 group-hover:opacity-100">${sessionCopyMenuItemIcon()}</span><span class="flex-1 min-w-0 truncate">原地复制会话 - iCodex</span></div>`;
     item.addEventListener("pointerup", activateSessionCopyMenuItem, true);
     item.addEventListener("click", activateSessionCopyMenuItem, true);
     item.addEventListener("keydown", activateSessionCopyMenuItem, true);
@@ -18682,7 +18682,7 @@
         if (data.historyArchive?.detailRetentionDays) { const note = mark(document.createElement("span")); note.textContent = `明细保留 ${data.historyArchive.detailRetentionDays} 天；更早用量保留在日汇总中。`; note.style.width = "100%"; area.appendChild(note); }
         body.appendChild(area);
       },
-      fail(error) { state.initializationError = error?.name || "Error"; console.warn("[Codex++] 完整鲸鱼初始化失败", state.initializationError); },
+      fail(error) { state.initializationError = error?.name || "Error"; console.warn("[iCodex] 完整鲸鱼初始化失败", state.initializationError); },
       bind(controls) { state.controls = controls; subscribe(); },
       defaultBubbleItems(items) {
         const copy = JSON.parse(JSON.stringify(items));
@@ -18806,7 +18806,7 @@
     if (codexPlusWhaleState.notice) return;
     const notice = document.createElement("div"); notice.setAttribute("data-codex-plus-ext", "whale-widget"); notice.setAttribute("role", "status");
     notice.style.cssText = "position:fixed;right:20px;bottom:20px;z-index:2147483600;max-width:320px;padding:12px;border-radius:10px;background:#fff5ec;color:#7c3218;font:12px/1.6 system-ui;box-shadow:0 3px 16px #0002";
-    notice.textContent = "鲸鱼挂件暂时无法加载，10 秒后自动重试。可在 Codex++ 增强设置关闭后重新开启。";
+    notice.textContent = "鲸鱼挂件暂时无法加载，10 秒后自动重试。可在 iCodex 增强设置关闭后重新开启。";
     document.body.appendChild(notice); codexPlusWhaleState.notice = notice;
   }
   function codexPlusWhaleProfileFingerprint() {
@@ -18831,7 +18831,7 @@
     if (document.hidden) return;
     if (Date.now() < codexPlusWhaleState.failedUntil) return;
     if (typeof window.__CODEX_PLUS_WHALE_ENGINE__ !== "function") {
-      if (!codexPlusWhaleState.missingSource) console.warn("[Codex++] 完整鲸鱼运行时未随启动器加载，请重新构建启动器。");
+      if (!codexPlusWhaleState.missingSource) console.warn("[iCodex] 完整鲸鱼运行时未随启动器加载，请重新构建启动器。");
       codexPlusWhaleState.missingSource = true; codexPlusWhaleInitializationFailed(null); return;
     }
     const runtime = createCodexPlusWhaleFullRuntime();
@@ -18863,7 +18863,7 @@
   window.__codexSessionDeleteDeferredPending = false;
 
   /**
-   * 这个节点是不是 Codex++ 自己（或拓展）的 UI。
+   * 这个节点是不是 iCodex 自己（或拓展）的 UI。
    *
    * 内置选择器写在这里；拓展通过注册中心登记的选择器走 isCodexPlusExtensionNode，
    * 那边已把选择器合并成一个串并在 Set 变化时重建缓存，所以这里每次调用只多一次
@@ -19127,8 +19127,8 @@
         ].join(";");
         document.body.appendChild(node);
       }
-      node.textContent = `Codex++ 多开 · ${label}`;
-      node.setAttribute("aria-label", `当前 Codex++ 多开身份：${label}`);
+      node.textContent = `iCodex 多开 · ${label}`;
+      node.setAttribute("aria-label", `当前 iCodex 多开身份：${label}`);
       return true;
     };
     if (mount()) return;

@@ -16,7 +16,7 @@ export function autoCompactOptions(current: string): string[] {
   return options;
 }
 
-/** 校验用户输入的自动压缩比例；空值由 Codex++ 保存为明确的 90% 默认值。 */
+/** 校验用户输入的自动压缩比例；空值由 iCodex 保存为明确的 90% 默认值。 */
 export function isValidAutoCompactPercent(value: string): boolean {
   const trimmed = value.trim();
   if (!trimmed) return true;

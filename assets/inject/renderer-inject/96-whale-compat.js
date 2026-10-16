@@ -423,7 +423,7 @@
         if (data.historyArchive?.detailRetentionDays) { const note = mark(document.createElement("span")); note.textContent = `明细保留 ${data.historyArchive.detailRetentionDays} 天；更早用量保留在日汇总中。`; note.style.width = "100%"; area.appendChild(note); }
         body.appendChild(area);
       },
-      fail(error) { state.initializationError = error?.name || "Error"; console.warn("[Codex++] 完整鲸鱼初始化失败", state.initializationError); },
+      fail(error) { state.initializationError = error?.name || "Error"; console.warn("[iCodex] 完整鲸鱼初始化失败", state.initializationError); },
       bind(controls) { state.controls = controls; subscribe(); },
       defaultBubbleItems(items) {
         const copy = JSON.parse(JSON.stringify(items));

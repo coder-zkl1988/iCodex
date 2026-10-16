@@ -206,7 +206,7 @@ fn acquire_resilient_loopback_port_guard_with(
         return bind(port).map(LoopbackPortGuard::listener);
     }
 
-    // 走到这里说明本进程拿到了排他锁，即「没有别的 Codex++ 实例正持有该守卫」。
+    // 走到这里说明本进程拿到了排他锁，即「没有别的 iCodex 实例正持有该守卫」。
     // 这一点必须作为唯一判据：端口能 connect 只说明那个端口上有东西在监听，
     // 说明不了监听者是本产品。端口被无关进程（或已退出实例留下的僵尸监听）
     // 占着时仍可 connect，若据此返回 AddrInUse，调用方会判定「已有实例在跑」

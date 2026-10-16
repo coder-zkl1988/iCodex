@@ -15,7 +15,7 @@ const SHARE_HOSTS: &[&str] = &["share.codexpp.cc", "codexpp-share.pages.dev"];
 pub fn save_pending_session_share_from_protocol_url(url: &str) -> anyhow::Result<String> {
     let parsed = reqwest::Url::parse(url).context("会话导入链接格式无效")?;
     if parsed.scheme() != "codexplusplus" || parsed.host_str() != Some("session") {
-        bail!("不是 Codex++ 会话导入链接");
+        bail!("不是 iCodex 会话导入链接");
     }
     let share_url = parsed
         .query_pairs()
@@ -107,7 +107,7 @@ pub async fn import_shared_session_url(home: &Path, url: &str) -> anyhow::Result
 fn validate_share_url(url: &str) -> anyhow::Result<reqwest::Url> {
     let parsed = reqwest::Url::parse(url.trim()).context("分享 URL 格式无效")?;
     if parsed.scheme() != "https" || !parsed.host_str().is_some_and(|host| SHARE_HOSTS.contains(&host)) {
-        bail!("仅支持 Codex++ 分享站点链接");
+        bail!("仅支持 iCodex 分享站点链接");
     }
     if parsed.fragment().is_none() {
         bail!("分享链接缺少解密密钥");

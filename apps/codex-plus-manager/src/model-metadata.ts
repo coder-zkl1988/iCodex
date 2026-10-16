@@ -256,7 +256,7 @@ export function normalizeTokenCountInput(value: string): string {
 /// - 窗口：取内置 context_window（对内置命中的模型，留空的真实含义就是
 ///   「用内置窗口」，回填把它显式化，避免被误解为「Codex 默认长度」）。
 /// - 压缩：优先取内置 auto_compact_token_limit 换算的百分比（当前内置资产
-///   均为 null，预留厂商未来提供值的通路）；否则回落 Codex++ 默认 90%——
+///   均为 null，预留厂商未来提供值的通路）；否则回落 iCodex 默认 90%——
 ///   空列的真实含义就是「用默认 90%」。
 /// 上游获取、手动提交行名、打开导入面板三个入口共用这一裁决。
 export function builtinRowBackfillValue(

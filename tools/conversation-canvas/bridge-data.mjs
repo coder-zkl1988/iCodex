@@ -1,7 +1,7 @@
 import {parseMessage,buildGraph} from './model.mjs';
 
 export function graphFromExport(result, threadId, annotations={nodes:[]}) {
-  if(result?.status!=='ok')throw new Error(result?.message||'Codex++ 会话读取失败');
+  if(result?.status!=='ok')throw new Error(result?.message||'iCodex 会话读取失败');
   if(result.kind!=='codex-rollout'||result.session_id!==threadId||typeof result.content!=='string')throw new Error('会话接口返回了不匹配的数据');
   const messages=[],seen=new Set();
   let declaredId=null;

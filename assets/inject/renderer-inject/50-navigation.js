@@ -84,19 +84,19 @@
   }
 
   function displayNameForPluginMarketplaceName(name, fallback) {
-    if (name === "openai-bundled") return "OpenAI插件1(Codex++)";
-    if (name === "openai-curated") return "OpenAI插件2(Codex++)";
-    if (name === "openai-primary-runtime") return "OpenAI插件3(Codex++)";
-    if (name === "openai-api-curated") return "OpenAI插件4(Codex++)";
+    if (name === "openai-bundled") return "OpenAI插件1(iCodex)";
+    if (name === "openai-curated") return "OpenAI插件2(iCodex)";
+    if (name === "openai-primary-runtime") return "OpenAI插件3(iCodex)";
+    if (name === "openai-api-curated") return "OpenAI插件4(iCodex)";
     // 兼容原生返回的既有旧配置名称；这里不会注入、缓存或注册插件市场。
-    if (name === "codex-plus-curated" || name === "openai-curated-remote") return "OpenAI插件5(Codex++)";
+    if (name === "codex-plus-curated" || name === "openai-curated-remote") return "OpenAI插件5(iCodex)";
     return fallback;
   }
 
   function patchPluginMarketplaceObject(marketplace) {
     if (!marketplace || typeof marketplace !== "object" || marketplace.__codexPlusMarketplaceUnlockPatched) return false;
     // 上游已经给了显示名就用上游的（issue #692：此前无条件用上面的中文编号覆盖，
-    // 用户看到的是「OpenAI插件1(Codex++)」而不是市场真实名字）。
+    // 用户看到的是「OpenAI插件1(iCodex)」而不是市场真实名字）。
     // 编号映射只在市场上游确实没给显示名时兜底；去重仍走 restorePluginMarketplaceName，
     // 与显示名无关，所以不会因此退回重复条目。
     const upstreamDisplayName = marketplace.displayName || marketplace.title || marketplace.label || "";

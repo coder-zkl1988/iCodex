@@ -553,7 +553,7 @@ mod tests {
         let executable = Path::new("/Applications/Codex App/Contents/app/ChatGPT.exe");
         let codex_home = Path::new("/Users/a b/.codex");
         let sqlite_home = Path::new("/Users/a b/.codex-sqlite");
-        let user_data_dir = Path::new("/Users/a b/Codex++/instance 1/user-data");
+        let user_data_dir = Path::new("/Users/a b/iCodex/instance 1/user-data");
         let port = free_port();
 
         let script = build_wrapper_script(
@@ -579,7 +579,7 @@ mod tests {
         assert!(script.contains("set \"CODEX_PLUS_MULTI_INSTANCE=1\"\r\n"));
         assert!(script.contains(&format!("--remote-debugging-port={port}")));
         assert!(script.contains(&format!("--remote-allow-origins=http://127.0.0.1:{port}")));
-        assert!(script.contains("--user-data-dir=\"/Users/a b/Codex++/instance 1/user-data\""));
+        assert!(script.contains("--user-data-dir=\"/Users/a b/iCodex/instance 1/user-data\""));
         // start 的第一个参数必须是空标题，否则含空格的 exe 路径会被当成窗口标题。
         assert!(script.contains(&format!(
             "start \"\" /b \"/Applications/Codex App/Contents/app/ChatGPT.exe\" \
@@ -602,7 +602,7 @@ mod tests {
             Path::new(WINDOWS_EXE),
             Path::new(r"C:\Users\a b\.codex"),
             Path::new(r"C:\Users\a b\.codex-sqlite"),
-            Path::new(r"C:\Users\a b\AppData\Local\Codex++\instance 1\user data"),
+            Path::new(r"C:\Users\a b\AppData\Local\iCodex\instance 1\user data"),
             free_port(),
             &[],
         )
@@ -610,7 +610,7 @@ mod tests {
 
         assert!(script.contains(&format!("start \"\" /b \"{WINDOWS_EXE}\"")));
         assert!(script.contains(
-            "--user-data-dir=\"C:\\Users\\a b\\AppData\\Local\\Codex++\\instance 1\\user data\""
+            "--user-data-dir=\"C:\\Users\\a b\\AppData\\Local\\iCodex\\instance 1\\user data\""
         ));
         assert!(script.contains("set \"CODEX_HOME=C:\\Users\\a b\\.codex\""));
     }

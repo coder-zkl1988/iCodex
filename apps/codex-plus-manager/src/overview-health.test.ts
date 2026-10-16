@@ -19,7 +19,7 @@ test("overview merges the local server and protocol conversion and keeps the deb
   const items = functionSource("healthItems");
   assert.match(screen, /t\("Codex 版本"\)/);
   assert.match(items, /t\("Codex 应用"\)/);
-  assert.doesNotMatch(screen + items, /management_shortcut|Codex\+\+ 应用入口|actions\.(checkHealth|repairShortcuts)/);
+  assert.doesNotMatch(screen + items, /management_shortcut|iCodex 应用入口|actions\.(checkHealth|repairShortcuts)/);
   for (const title of ["本地服务器状态", "调试连接状态"]) {
     assert.ok(items.includes(`t("${title}")`));
   }
@@ -52,7 +52,7 @@ test("maintenance retains application entrypoint checks and repairs", () => {
 
 test("maintenance no longer offers the removed entrypoint management panel", () => {
   const screen = functionSource("MaintenanceScreen");
-  assert.doesNotMatch(screen, /入口管理|安装入口|卸载入口|修复入口|卸载时移除 Codex\+\+ 托管数据/);
+  assert.doesNotMatch(screen, /入口管理|安装入口|卸载入口|修复入口|卸载时移除 iCodex 托管数据/);
   assert.doesNotMatch(screen, /actions\.installEntrypoints|actions\.uninstallEntrypoints|removeOwnedData/);
   const entry = functionSource("App");
   assert.doesNotMatch(entry, /install_entrypoints|uninstall_entrypoints|removeOwnedData|installEntrypoints|uninstallEntrypoints/);

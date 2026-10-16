@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Codex++ Linux .deb 打包脚本
+# iCodex Linux .deb 打包脚本
 # 用法: sudo bash scripts/installer/linux/build-deb.sh [VERSION]
 #       或分步执行下面的各个函数
 
@@ -18,7 +18,7 @@ ARCH="$(dpkg --print-architecture)"
 NODE_BIN="${NODE_BIN:-$(command -v node || true)}"
 PNPM_BIN="${PNPM_BIN:-$(command -v pnpm || true)}"
 
-echo "=== Codex++ Linux .deb 构建 ==="
+echo "=== iCodex Linux .deb 构建 ==="
 echo "版本: $VERSION"
 echo "架构: $ARCH"
 echo "仓库: $REPO_DIR"
@@ -127,7 +127,7 @@ package_deb() {
     # ── Desktop 文件 ──
     cat > "$stage/share/applications/${PACKAGE_NAME}.desktop" <<'EOF'
 [Desktop Entry]
-Name=Codex++
+Name=iCodex
 Comment=Configure and launch the official Codex desktop app
 Exec=codex-plus-plus %u
 Icon=codex-plus-plus
@@ -157,7 +157,7 @@ Installed-Size: 70620
 Depends: libc6 (>= 2.34), libgcc-s1 (>= 4.2), libstdc++6 (>= 13), libdbus-1-3, libglib2.0-0t64, libgtk-3-0t64, libwebkit2gtk-4.1-0, libsoup-3.0-0, libjavascriptcoregtk-4.1-0, libssl3t64 (>= 3.0.0), libz3-4, libatspi2.0-0t64, libasound2t64
 
 Recommends: codex
-Description: Codex++ configures and launches OpenAI Codex / ChatGPT desktop apps.
+Description: iCodex configures and launches OpenAI Codex / ChatGPT desktop apps.
  It provides provider switching, protocol conversion, session management and UI enhancements
  via Chromium DevTools Protocol and a local helper service, without modifying the official
  app.asar or writing patches to the installation directory.

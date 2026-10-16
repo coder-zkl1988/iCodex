@@ -1,4 +1,4 @@
-// Lightweight source-text-keyed i18n for the Codex++ manager UI.
+// Lightweight source-text-keyed i18n for the iCodex manager UI.
 //
 // The app is authored in Chinese. Every user-facing Chinese literal is wrapped
 // with `t("中文")` (plain strings) or `tf("前缀 {0}", [expr])` (interpolated

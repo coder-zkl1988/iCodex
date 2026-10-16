@@ -1,5 +1,5 @@
 /**
- * Codex++ MCP 服务器预设
+ * iCodex MCP 服务器预设
  * 基于 cc-switch (MIT) 的 mcpPresets.ts，作者 Jason Young
  * https://github.com/farion1231/cc-switch
  *

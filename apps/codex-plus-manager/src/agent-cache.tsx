@@ -156,7 +156,7 @@ export function AgentCachePanel() {
     <Card className="panel agent-cache-panel">
       <CardHeader className="panel-head">
         <CardTitle>{t("AI Agent 缓存清理")}</CardTitle>
-        <CardDescription>{t("扫描 Codex、Claude 与 Codex++ 的已知缓存目录，由你选择清理项目。")}</CardDescription>
+        <CardDescription>{t("扫描 Codex、Claude 与 iCodex 的已知缓存目录，由你选择清理项目。")}</CardDescription>
       </CardHeader>
       <CardContent className="agent-cache-content">
         <div className="agent-cache-toolbar">
@@ -192,7 +192,7 @@ export function AgentCachePanel() {
                 <AppSelection app={app.name} groups={app.groups} selected={selected} disabled={busy !== null} onChange={setSelected} />
               </div>
               <div className="agent-cache-app-size">
-                <span className={`agent-cache-app-icon ${app.name === "Claude" ? "is-claude" : app.name === "Codex++" ? "is-plus" : "is-codex"}`}>
+                <span className={`agent-cache-app-icon ${app.name === "Claude" ? "is-claude" : app.name === "iCodex" ? "is-plus" : "is-codex"}`}>
                   <Icon aria-hidden="true" />
                 </span>
                 <strong>{report ? bytes(app.totalBytes) : "—"}</strong>

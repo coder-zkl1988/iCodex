@@ -29,7 +29,7 @@ async fn installs_official_codex_into_a_temporary_directory() {
     let app = std::path::PathBuf::from(&outcome.installed_path);
     assert_eq!(app, install_dir.join("ChatGPT.app"));
     assert!(app.join("Contents").join("MacOS").is_dir());
-    // 装好的应用要能被 Codex++ 自己的探测认成 Codex。
+    // 装好的应用要能被 iCodex 自己的探测认成 Codex。
     assert_eq!(
         codex_plus_core::app_paths::find_macos_codex_app(&[install_dir.clone()]).as_deref(),
         Some(app.as_path())

@@ -7,7 +7,7 @@
   window.__codexSessionDeleteDeferredPending = false;
 
   /**
-   * 这个节点是不是 Codex++ 自己（或拓展）的 UI。
+   * 这个节点是不是 iCodex 自己（或拓展）的 UI。
    *
    * 内置选择器写在这里；拓展通过注册中心登记的选择器走 isCodexPlusExtensionNode，
    * 那边已把选择器合并成一个串并在 Set 变化时重建缓存，所以这里每次调用只多一次

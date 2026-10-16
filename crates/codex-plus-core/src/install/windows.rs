@@ -1,5 +1,7 @@
 use std::path::{Path, PathBuf};
 
+#[cfg(windows)]
+use super::LEGACY_APP_NAME;
 use super::{APP_NAME, InstallOptions, application_source, install_root_or_default};
 
 const UNINSTALL_SUBKEY: &str = r"Software\Microsoft\Windows\CurrentVersion\Uninstall\CodexPlusPlus";
@@ -40,11 +42,11 @@ pub fn build_windows_entrypoint_plan(options: &InstallOptions) -> WindowsEntrypo
     let quiet_uninstall_command = format!("{uninstall_command} /S");
     WindowsEntrypointPlan {
         silent_shortcut: install_root
-            .join("Codex++.lnk")
+            .join(format!("{APP_NAME}.lnk"))
             .to_string_lossy()
             .to_string(),
         manager_shortcut: install_root
-            .join("Codex++.lnk")
+            .join(format!("{APP_NAME}.lnk"))
             .to_string_lossy()
             .to_string(),
         install_root: install_root.to_string_lossy().to_string(),
@@ -78,7 +80,7 @@ pub fn install_shortcuts(options: &InstallOptions) -> anyhow::Result<()> {
             create_entrypoint_shortcut(
                 PathBuf::from(&plan.silent_shortcut),
                 PathBuf::from(&plan.launcher_path),
-                "Open Codex++",
+                "Open iCodex",
                 PathBuf::from(&plan.silent_icon_path),
             )
         },
@@ -120,6 +122,9 @@ fn create_desktop_shortcut_on_first_install(
 pub fn uninstall_shortcuts(options: &InstallOptions) -> anyhow::Result<()> {
     let plan = build_windows_entrypoint_plan(options);
     let _ = std::fs::remove_file(&plan.silent_shortcut);
+    // 改名前创建的 Codex++.lnk 也属于本产品，卸载时一并移除。
+    let _ =
+        std::fs::remove_file(Path::new(&plan.install_root).join(format!("{LEGACY_APP_NAME}.lnk")));
     let _ = crate::windows_integration::delete_current_user_key(&format!(
         r"{URL_PROTOCOL_SUBKEY}\shell\open\command"
     ));
@@ -200,7 +205,7 @@ fn write_uninstall_registration(plan: &WindowsEntrypointPlan) -> anyhow::Result<
 fn register_url_protocol(manager_path: &str) -> anyhow::Result<()> {
     register_url_protocol_key(
         URL_PROTOCOL_SUBKEY,
-        "URL:Codex++ Import Protocol",
+        "URL:iCodex Import Protocol",
         manager_path,
     )?;
     register_url_protocol_key(

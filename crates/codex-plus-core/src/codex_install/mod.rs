@@ -113,7 +113,7 @@ pub struct InstallOptions {
     /// 安装目录覆盖（仅 macOS 生效，供端到端演练用）。为空时选 `/Applications`，不可写则退到
     /// `~/Applications`，并在已能探测到 Codex 时拒绝安装；指定后跳过「已安装」检查。
     pub install_dir: Option<PathBuf>,
-    /// 暂存目录根覆盖；为空时用 Codex++ 状态目录下的 `codex-install/`。
+    /// 暂存目录根覆盖；为空时用 iCodex 状态目录下的 `codex-install/`。
     pub staging_root: Option<PathBuf>,
 }
 
@@ -316,7 +316,7 @@ pub(crate) fn ensure_not_cancelled() -> anyhow::Result<()> {
 }
 
 pub(crate) fn log_event(event: &str, detail: Value) {
-    // 单元测试会真实走回退、验签失败等分支，不能把演练事件写进本机 Codex++ 的诊断日志。
+    // 单元测试会真实走回退、验签失败等分支，不能把演练事件写进本机 iCodex 的诊断日志。
     if cfg!(test) {
         return;
     }

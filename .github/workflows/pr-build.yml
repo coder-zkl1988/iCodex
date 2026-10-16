@@ -175,7 +175,7 @@ jobs:
           test "${#apps[@]}" = "2"
           test -f "dist/macos/stage/.hidden"
           grep -qx "Codex++ 管理工具.app" "dist/macos/stage/.hidden"
-          for app in "dist/macos/stage/Codex++.app" "dist/macos/stage/Codex++ 管理工具.app"; do
+          for app in "dist/macos/stage/iCodex.app" "dist/macos/stage/Codex++ 管理工具.app"; do
             test -f "$app/Contents/Info.plist"
             test -f "$app/Contents/PkgInfo"
             test -x "$app/Contents/MacOS/$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app/Contents/Info.plist")"

@@ -140,8 +140,8 @@ pub fn parse_renderer_verification(raw: Value) -> anyhow::Result<DreamSkinVerifi
             "version",
             "注入版本",
             version_pass,
-            "Codex++ 皮肤版本有效。",
-            "注入版本不是 Codex++ Dream Skin。",
+            "iCodex 皮肤版本有效。",
+            "注入版本不是 iCodex Dream Skin。",
         ),
         bool_check(
             "style",

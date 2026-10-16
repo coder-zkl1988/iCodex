@@ -253,13 +253,13 @@
     if(!nativeReadTasks.has(id)){
       let result;
       try{
-        if(typeof window.__codexSessionDeleteBridge!=='function')throw Error('Codex++ 会话接口尚未连接，请稍后点击刷新');
+        if(typeof window.__codexSessionDeleteBridge!=='function')throw Error('iCodex 会话接口尚未连接，请稍后点击刷新');
         let timer;
         try{result=await Promise.race([window.__codexSessionDeleteBridge('/session/export',{session_id:id}),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('会话读取超时，请重试')),15000);})]);}
         finally{clearTimeout(timer);}
       }catch(error){if(!isExportSizeError(error.message))throw error;result={message:error.message};}
       if(result?.status==='ok')return result;
-      if(!isExportSizeError(result?.message))throw Error(result?.message||'Codex++ 会话读取失败');
+      if(!isExportSizeError(result?.message))throw Error(result?.message||'iCodex 会话读取失败');
       nativeReadTasks.add(id);
     }
     signal.throwIfAborted();progress('会话较大，正在改用原生分页读取…');
@@ -282,7 +282,7 @@
       await hydrateAnnotations(id);
       const result=await readCanvasSource(id,abort.signal,text=>{if(!disposed&&seq===requestSequence)status(text);});
       if(disposed||seq!==requestSequence||id!==currentId())return;
-      if(result?.status!=='ok')throw new Error(result?.message||'Codex++ 会话读取失败');
+      if(result?.status!=='ok')throw new Error(result?.message||'iCodex 会话读取失败');
       if(!data||result.content!==revision){
         data=result.kind==='canvas-messages'?{threadId:id,title:storedAnnotations(id).title||'当前对话',messages:result.messages,...buildGraph(result.messages,storedAnnotations(id))}:graphFromExport(result,id,storedAnnotations(id));revision=result.content;render();
         diagnostic('native_data',{nodeCount:data.nodes.length,messageCount:data.messages.length});

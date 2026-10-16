@@ -1762,7 +1762,7 @@ fn save_model(settings: &BackendSettings, path: &Path, input: &Value) -> anyhow:
         .is_some_and(|v| !v.is_null() && v != "")
     {
         return Err(error(
-            "请在 Codex++ 的供应商配置中保存密钥，此处只选择已有配置 ID",
+            "请在 iCodex 的供应商配置中保存密钥，此处只选择已有配置 ID",
         ));
     }
     let model = input.get("model").unwrap_or(input);
@@ -1794,7 +1794,7 @@ fn save_model(settings: &BackendSettings, path: &Path, input: &Value) -> anyhow:
     }
     if provider != CODEX {
         let profile = profile_for(settings, &saved)
-            .ok_or_else(|| error("请选择已有 Codex++ 供应商配置 ID"))?;
+            .ok_or_else(|| error("请选择已有 iCodex 供应商配置 ID"))?;
         saved["keyRef"] = json!(profile.id);
         // 仅保存动作可以批准模板的固定端点。当前供应商自动探测不会批准新域。
         let mut approved = Vec::new();
@@ -2277,7 +2277,7 @@ async fn dispatch(
                     }
                     "set-key" | "delete-key" => {
                         return Err(error(
-                            "请在 Codex++ 的供应商配置中管理密钥，挂件只复用已有配置",
+                            "请在 iCodex 的供应商配置中管理密钥，挂件只复用已有配置",
                         ));
                     }
                     "model-settings" => model_usage_patch(settings, path, body, history)?,

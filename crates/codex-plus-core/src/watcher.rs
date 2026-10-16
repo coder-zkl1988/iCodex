@@ -405,7 +405,7 @@ mod process_identity_tests {
             "  42 /Applications/ChatGPT.app/Contents/MacOS/ChatGPT --remote-debugging-port=9229",
             "  11 /Applications/Codex Dev.app/Contents/MacOS/Codex Dev --remote-debugging-port=9229",
             "  43 /Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)",
-            "  44 /Applications/Codex++.app/Contents/MacOS/CodexPlusPlus",
+            "  44 /Applications/iCodex.app/Contents/MacOS/CodexPlusPlus",
             "  45 /bin/zsh -lc '/Applications/ChatGPT.app/Contents/MacOS/ChatGPT'",
             "  46 /usr/bin/open -W -a /Applications/ChatGPT.app",
         ];
@@ -843,7 +843,7 @@ pub fn install_watcher(launcher_path: &Path, debug_port: u16) -> anyhow::Result<
 #[cfg(target_os = "macos")]
 pub fn install_watcher(launcher_path: &Path, _debug_port: u16) -> anyhow::Result<()> {
     if !launcher_path.is_file() {
-        anyhow::bail!("找不到 Codex++ 可执行文件：{}", launcher_path.display());
+        anyhow::bail!("找不到 iCodex 可执行文件：{}", launcher_path.display());
     }
     let home = directories::BaseDirs::new()
         .map(|dirs| dirs.home_dir().to_path_buf())
@@ -1934,7 +1934,7 @@ fn create_startup_shortcut(launcher_path: &Path, arguments: &str) -> anyhow::Res
         target: launcher_path.to_path_buf(),
         arguments: arguments.to_string(),
         working_directory: launcher_path.parent().map(Path::to_path_buf),
-        description: "打开 Codex++ 界面".to_string(),
+        description: "打开 iCodex 界面".to_string(),
         icon: None,
         show_minimized: false,
     })

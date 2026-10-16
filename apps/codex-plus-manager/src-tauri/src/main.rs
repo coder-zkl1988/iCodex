@@ -18,7 +18,7 @@ fn main() {
     #[cfg(target_os = "macos")]
     if launched_from_legacy_manager_compat_bundle() {
         // 旧版更新器要求 DMG 中有第二个 manager bundle，并会在替换后打开它。
-        // 兼容壳只满足身份校验；让真正的统一 Codex++ app 接管界面。
+        // 兼容壳只满足身份校验；让真正的统一 iCodex app 接管界面。
         return;
     }
     // 开机启动也只打开界面；禁用开机项不影响用户主动双击。

@@ -502,7 +502,7 @@ pub struct BackendSettings {
     pub dictation: DictationSettings,
     #[serde(rename = "codexAppPath", default)]
     pub codex_app_path: String,
-    /// 自动接管官方 App：开启后用户自己双击启动官方 App 时由 Codex++ 接管并注入。
+    /// 自动接管官方 App：开启后用户自己双击启动官方 App 时由 iCodex 接管并注入。
     #[serde(rename = "codexAppAutoTakeover", default)]
     pub codex_app_auto_takeover: bool,
     /// 已在运行的官方 App 没有调试端口时、「疑似有人在用」的策略：

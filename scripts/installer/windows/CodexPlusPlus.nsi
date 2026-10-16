@@ -9,10 +9,11 @@ ${Using:StrFunc} UnStrStr
 !endif
 !define ROOT "..\..\.."
 
-Name "Codex++"
+Name "iCodex"
 OutFile "${ROOT}\dist\windows\CodexPlusPlus-${VERSION}-windows-x64-setup.exe"
 InstallDir "$LOCALAPPDATA\Programs\Codex++"
 ; 沿用旧安装目录登记，覆盖升级继续安装到原目录。
+; 产品已改名 iCodex，但安装目录与注册表键保留旧名：存量用户升级仍落在原目录、原卸载登记。
 InstallDirRegKey HKCU "Software\Codex++" "InstallDir"
 RequestExecutionLevel user
 SetCompressor /SOLID lzma
@@ -55,7 +56,7 @@ Var HadDesktopEntry
     Sleep 500
     Goto wait_loop
   wait_prompt:
-    MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "请从系统托盘退出 Codex++，等待后台服务清理完成后重试。" IDRETRY wait_retry IDCANCEL wait_cancel
+    MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "请从系统托盘退出 iCodex，等待后台服务清理完成后重试。" IDRETRY wait_retry IDCANCEL wait_cancel
   wait_retry:
     StrCpy $2 0
     Goto wait_loop
@@ -84,19 +85,24 @@ Section "Install"
   ; 双程序版本升级时只保留统一应用；清理失败则停止，避免残留旧管理工具。
   Delete "$INSTDIR\codex-plus-plus-manager.exe"
   IfFileExists "$INSTDIR\codex-plus-plus-manager.exe" 0 legacy_binary_removed
-    MessageBox MB_OK|MB_ICONSTOP "旧管理工具仍被占用。请退出 Codex++ 后重新安装。"
+    MessageBox MB_OK|MB_ICONSTOP "旧管理工具仍被占用。请退出 iCodex 后重新安装。"
     Abort
   legacy_binary_removed:
   File "${ROOT}\dist\windows\app\codex-plus-plus.exe"
 
   ; 只迁移确实存在的桌面入口，用户删掉的入口在升级时仍不补建（issue #2376）。
   StrCpy $HadDesktopEntry 0
+  IfFileExists "$DESKTOP\iCodex.lnk" desktop_entry_found 0
   IfFileExists "$DESKTOP\Codex++.lnk" desktop_entry_found 0
   IfFileExists "$DESKTOP\Codex++ 管理工具.lnk" desktop_entry_found 0
   IfFileExists "$DESKTOP\Codex++ 绠＄悊宸ュ叿.lnk" desktop_entry_found desktop_entry_checked
   desktop_entry_found:
   StrCpy $HadDesktopEntry 1
   desktop_entry_checked:
+  ; 改名前的 Codex++ 入口一并清理，再按新名重建。
+  Delete "$DESKTOP\iCodex.lnk"
+  Delete "$SMPROGRAMS\iCodex\iCodex.lnk"
+  Delete "$SMPROGRAMS\iCodex\卸载 iCodex.lnk"
   Delete "$DESKTOP\Codex++.lnk"
   Delete "$DESKTOP\Codex++ 管理工具.lnk"
   Delete "$DESKTOP\Codex++ 绠＄悊宸ュ叿.lnk"
@@ -104,15 +110,16 @@ Section "Install"
   Delete "$SMPROGRAMS\Codex++\Codex++ 管理工具.lnk"
   Delete "$SMPROGRAMS\Codex++\Codex++ 绠＄悊宸ュ叿.lnk"
   Delete "$SMPROGRAMS\Codex++\卸载 Codex++.lnk"
+  RMDir "$SMPROGRAMS\Codex++"
 
   StrCmp $ExistingInstall "" desktop_entry_create 0
   StrCmp $HadDesktopEntry 1 desktop_entry_create desktop_entry_done
   desktop_entry_create:
-  CreateShortcut "$DESKTOP\Codex++.lnk" "$INSTDIR\codex-plus-plus.exe" "" "$INSTDIR\codex-plus-plus.exe"
+  CreateShortcut "$DESKTOP\iCodex.lnk" "$INSTDIR\codex-plus-plus.exe" "" "$INSTDIR\codex-plus-plus.exe"
   desktop_entry_done:
-  CreateDirectory "$SMPROGRAMS\Codex++"
-  CreateShortcut "$SMPROGRAMS\Codex++\Codex++.lnk" "$INSTDIR\codex-plus-plus.exe" "" "$INSTDIR\codex-plus-plus.exe"
-  CreateShortcut "$SMPROGRAMS\Codex++\卸载 Codex++.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\codex-plus-plus.exe"
+  CreateDirectory "$SMPROGRAMS\iCodex"
+  CreateShortcut "$SMPROGRAMS\iCodex\iCodex.lnk" "$INSTDIR\codex-plus-plus.exe" "" "$INSTDIR\codex-plus-plus.exe"
+  CreateShortcut "$SMPROGRAMS\iCodex\卸载 iCodex.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\codex-plus-plus.exe"
 
   WriteUninstaller "$INSTDIR\uninstall.exe"
   WriteRegStr HKCU "Software\Codex++" "InstallDir" "$INSTDIR"
@@ -122,7 +129,7 @@ Section "Install"
   ; 卸载项，而运行时装过、之后走 NSIS 卸载的机器永远删不掉 CodexPlusPlus 那条。
   ; 写之前先清掉 legacy 键：存量用户靠这一步收尸，别删。
   DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Codex++"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\CodexPlusPlus" "DisplayName" "Codex++"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\CodexPlusPlus" "DisplayName" "iCodex"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\CodexPlusPlus" "DisplayVersion" "${VERSION}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\CodexPlusPlus" "Publisher" "BigPizzaV3"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\CodexPlusPlus" "DisplayIcon" "$INSTDIR\codex-plus-plus.exe"
@@ -132,7 +139,7 @@ Section "Install"
   ; 注册 codexplusplus:// 与 dreamskin:// URL 协议（issue #2354）。
   ; 键名与值同 codex-plus-core 的 install::windows::register_url_protocol 保持一致，
   ; 应用内"修复快捷方式"会以相同键幂等覆盖，两边互不冲突。
-  WriteRegStr HKCU "Software\Classes\codexplusplus" "" "URL:Codex++ Import Protocol"
+  WriteRegStr HKCU "Software\Classes\codexplusplus" "" "URL:iCodex Import Protocol"
   WriteRegStr HKCU "Software\Classes\codexplusplus" "URL Protocol" ""
   WriteRegStr HKCU "Software\Classes\codexplusplus\shell\open\command" "" '"$INSTDIR\codex-plus-plus.exe" "%1"'
   WriteRegStr HKCU "Software\Classes\dreamskin" "" "URL:DreamSkin Community Theme Protocol"
@@ -156,6 +163,10 @@ Section "Uninstall"
   Push "codex-plus-plus-manager.exe"
   Call un.WaitForProcessExit
 
+  Delete "$DESKTOP\iCodex.lnk"
+  Delete "$SMPROGRAMS\iCodex\iCodex.lnk"
+  Delete "$SMPROGRAMS\iCodex\卸载 iCodex.lnk"
+  RMDir "$SMPROGRAMS\iCodex"
   Delete "$DESKTOP\Codex++.lnk"
   Delete "$DESKTOP\Codex++ 管理工具.lnk"
   Delete "$DESKTOP\Codex++ 绠＄悊宸ュ叿.lnk"
@@ -172,7 +183,7 @@ Section "Uninstall"
   ; NSIS 的 Delete 遇到被占用文件会静默失败，用户会误以为卸载干净。
   ; 残留检测提示用户先从托盘退出，避免“卸载后重装”继续失败（issue #2362）。
   IfFileExists "$INSTDIR\codex-plus-plus.exe" 0 +2
-    MessageBox MB_OK|MB_ICONEXCLAMATION "Codex++ 仍被占用，未能删除。请从系统托盘退出 Codex++（或结束该进程）后重新卸载或安装。"
+    MessageBox MB_OK|MB_ICONEXCLAMATION "iCodex 仍被占用，未能删除。请从系统托盘退出 iCodex（或结束该进程）后重新卸载或安装。"
 
   Delete "$INSTDIR\uninstall.exe"
   RMDir "$INSTDIR"

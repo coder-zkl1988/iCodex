@@ -1025,7 +1025,7 @@
         new Promise((_, reject) => {
           timeoutId = setTimeout(() => {
             sendCodexPlusDiagnostic("app_server_preparation_read_timeout", { path, timeoutMs });
-            reject(new Error(`Codex++ preparation read timed out: ${path}`));
+            reject(new Error(`iCodex preparation read timed out: ${path}`));
           }, timeoutMs);
         }),
       ]);

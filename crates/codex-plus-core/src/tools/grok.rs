@@ -33,7 +33,7 @@ use crate::model_suffix::parse_model_suffix;
 use crate::settings::{RelayProfile, RelayProtocol};
 use crate::tools::ToolConfig;
 
-/// Grok 的 `api_backend` 取值。当前 Codex++ 只产 `chat_completions`，
+/// Grok 的 `api_backend` 取值。当前 iCodex 只产 `chat_completions`，
 /// 如果上游是 Responses 或 Anthropic Messages 端点，跟着 profile 的协议走。
 fn api_backend_for(profile: &RelayProfile) -> &'static str {
     match profile.protocol {

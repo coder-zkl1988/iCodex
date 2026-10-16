@@ -8,7 +8,7 @@
   runtime.prepareReload = () => {
     const refreshPage = () => {
       if (!window.__codexPlusUserScriptsBootstrap) {
-        throw new Error("请先重启 Codex++，以启用旧脚本的安全重载支持。");
+        throw new Error("请先重启 iCodex，以启用旧脚本的安全重载支持。");
       }
       // 旧脚本没有完整的清理协议，交给浏览器释放整个页面的资源。
       if (!runtime.refreshPending) {

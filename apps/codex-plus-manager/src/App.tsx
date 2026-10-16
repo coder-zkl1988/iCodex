@@ -1566,7 +1566,7 @@ export function App() {
     const result = await run(() => call<PendingProviderImportResult>("load_pending_provider_import"));
     if (result) {
       setPendingProviderImport(result.pending);
-      if (!silent && !isSuccessStatus(result.status)) showResultNotice(t("Codex++ 导入"), result, { silentSuccess: true });
+      if (!silent && !isSuccessStatus(result.status)) showResultNotice(t("iCodex 导入"), result, { silentSuccess: true });
     }
     return result;
   };
@@ -1577,7 +1577,7 @@ export function App() {
       setPendingProviderImport(null);
       setSettings(result);
       setSettingsForm(normalizeSettings(result.settings));
-      showResultNotice(t("Codex++ 导入"), result);
+      showResultNotice(t("iCodex 导入"), result);
       await refreshCcsProviders(true);
     }
   };
@@ -1586,7 +1586,7 @@ export function App() {
     const result = await run(() => call<PendingProviderImportResult>("dismiss_pending_provider_import"));
     if (result) {
       setPendingProviderImport(null);
-      showResultNotice(t("Codex++ 导入"), result, { silentSuccess: true });
+      showResultNotice(t("iCodex 导入"), result, { silentSuccess: true });
     }
   };
 
@@ -2435,7 +2435,7 @@ export function App() {
     const result = await run(() => call<WatcherResult>("set_watcher_enabled", { enabled }));
     if (result) {
       setWatcher(result);
-      showNotice(t("开机打开 Codex++"), result.message, result.status);
+      showNotice(t("开机打开 iCodex"), result.message, result.status);
     }
   };
 
@@ -3262,7 +3262,7 @@ export function App() {
       void invoke("update_tray_labels", {
         showLabel: "Show window",
         quitLabel: "Quit",
-        windowTitle: "Codex++",
+        windowTitle: "iCodex",
       });
     }
   }, []);
@@ -5403,7 +5403,7 @@ function WhaleBalanceSettingsFields({ form, onFormChange }: {
   return (
     <details className="settings-block">
       <summary>{t("API 余额（可选）")}</summary>
-      <p className="field-hint">{t("跟随 Codex++ 当前供应商查询余额；Codex 订阅额度和本地 token 无需配置此项。")}</p>
+      <p className="field-hint">{t("跟随 iCodex 当前供应商查询余额；Codex 订阅额度和本地 token 无需配置此项。")}</p>
       <Field label={t("余额查询方式")}>
         <AppSelect<WhaleBalanceProtocol>
           value={form.codexAppWhaleBalanceProtocol}
@@ -5849,7 +5849,7 @@ function EnhanceScreen({
                 <FeatureToggle title={t("Markdown 导出")} detail={t("在会话列表显示导出按钮，导出带时间戳的 Markdown。")} checked={form.codexAppMarkdownExport} disabled={!masterEnabled} onChange={(value) => setEnhanceFlag("codexAppMarkdownExport", value)} />
                 <FeatureToggle title={t("粘贴修复")} detail={t("从 Word 等富文本粘贴到 Codex composer 时只保留纯文本，避免被识别为图片/文件附件。需重启 Codex 才生效。")} checked={form.codexAppPasteFix} disabled={!masterEnabled} onChange={(value) => setEnhanceFlag("codexAppPasteFix", value)} />
                 <FeatureToggle title={t("强制中文界面")} detail={t("强制启用 Codex App 内置 zh-CN 语言包，避免 Statsig/VPN 不通时回退英文。需重启 Codex 才能完整生效。")} checked={form.codexAppForceChineseLocale} disabled={!masterEnabled} onChange={(value) => setEnhanceFlag("codexAppForceChineseLocale", value)} />
-                <FeatureToggle title={t("容量错误自动重试")} detail={t("模型容量不足（Selected model is at capacity）时自动点「重试」。Codex 原生只会自动重试 4 次且带 10/30/120/300 秒倒计时，之后只剩手动按钮；开启后由 Codex++ 立刻接管，原生倒计时也不等。间隔与次数上限在 Codex 应用内的 Codex++ 设置里调整。")} checked={form.codexAppCapacityAutoRetry} disabled={!masterEnabled} onChange={(value) => setEnhanceFlag("codexAppCapacityAutoRetry", value)} />
+                <FeatureToggle title={t("容量错误自动重试")} detail={t("模型容量不足（Selected model is at capacity）时自动点「重试」。Codex 原生只会自动重试 4 次且带 10/30/120/300 秒倒计时，之后只剩手动按钮；开启后由 iCodex 立刻接管，原生倒计时也不等。间隔与次数上限在 Codex 应用内的 iCodex 设置里调整。")} checked={form.codexAppCapacityAutoRetry} disabled={!masterEnabled} onChange={(value) => setEnhanceFlag("codexAppCapacityAutoRetry", value)} />
                 <div className={`feature-toggle ${!masterEnabled ? "disabled" : ""}`}>
                   <span>
                     <strong>{t("打字特效（彩虹 P）")}</strong>
@@ -6590,7 +6590,7 @@ function DreamSkinScreen({
         </CardContent>
       </Panel>
       <RelayFold className="dream-skin-panel dream-skin-diagnostics-fold" title={t("诊断与验证")}>
-        <p className="relay-fold-description">{t("配置保存在 Codex++，实时操作通过本机回环 CDP 执行")}。{t("检查官方应用身份、CDP renderer、目标样式和页面布局")}</p>
+        <p className="relay-fold-description">{t("配置保存在 iCodex，实时操作通过本机回环 CDP 执行")}。{t("检查官方应用身份、CDP renderer、目标样式和页面布局")}</p>
           <div className="dream-skin-diagnostics-grid">
             <DreamSkinCheckList title={t("运行诊断")} checks={runtimeChecks} emptyText={t("刷新状态后显示运行诊断。")}/>
             <DreamSkinCheckList title={t("最近实机验证")} checks={verificationChecks} emptyText={t("运行实机验证后显示页面检查结果。")}/>
@@ -7322,7 +7322,7 @@ function SessionsScreen({
                 {t("恢复消息")} {sessionIndexRepairReport.repairedItems} · {t("已存在")} {sessionIndexRepairReport.alreadyPresent} · {t("短暂等待")} {sessionIndexRepairReport.deferredItems ?? 0} · {t("需核查")} {sessionIndexRepairReport.skippedItems}
               </p>
               <small>{t("仅恢复有本地原文且可确认位置的消息；已打开的会话可能需要重新打开才能显示。")}</small>
-              <p><small>{t("自动检查需要从此界面启动 Codex，并保持 Codex++ 运行，且自动修复开关已开启并保存；每次检查完成后间隔 30 分钟复查。此页面每 15 秒刷新报告，不会单独启动修复；再次检查不保证恢复。")}</small></p>
+              <p><small>{t("自动检查需要从此界面启动 Codex，并保持 iCodex 运行，且自动修复开关已开启并保存；每次检查完成后间隔 30 分钟复查。此页面每 15 秒刷新报告，不会单独启动修复；再次检查不保证恢复。")}</small></p>
               <p><small>{t("短暂等待最长 30 分钟；原文和记录文件都已超过 24 小时未更新的项目直接转入需核查。缺少对应轮次或结束状态，当前证据不足以安全补回；后续检查仍会核验。")}</small></p>
               {sessionIndexRepairReport.backupPath ? <p className="break-all">{t("修复前备份：")}{sessionIndexRepairReport.backupPath}</p> : null}
               {sessionIndexRepairReport.abortedReason ? (
@@ -7661,12 +7661,12 @@ function MaintenanceScreen({
   return (
     <>
       <Panel>
-        <CardHead title={t("检查与修复")} detail={t("检查 Codex++ 入口、Codex 应用和开机启动状态")} />
+        <CardHead title={t("检查与修复")} detail={t("检查 iCodex 入口、Codex 应用和开机启动状态")} />
         <CardContent>
           <div className="status-table">
             <StatusRow title={t("Codex 应用")} status={overview?.codex_app.status} path={overview?.codex_app.path} />
-            <StatusRow title={t("Codex++ 应用入口")} status={overview?.management_shortcut.status} path={overview?.management_shortcut.path} />
-            <StatusRow title={t("开机打开 Codex++")} status={watcher?.enabled ? "ok" : "disabled"} path={watcher?.disabled_flag} />
+            <StatusRow title={t("iCodex 应用入口")} status={overview?.management_shortcut.status} path={overview?.management_shortcut.path} />
+            <StatusRow title={t("开机打开 iCodex")} status={watcher?.enabled ? "ok" : "disabled"} path={watcher?.disabled_flag} />
             <StatusRow
               title={t("自动接管官方 App")}
               status={settings?.settings.codexAppAutoTakeover && autoTakeover?.running ? "ok" : "disabled"}
@@ -7680,7 +7680,7 @@ function MaintenanceScreen({
         </CardContent>
       </Panel>
       <Panel>
-        <CardHead title={t("开机打开 Codex++")} detail={t("登录系统后打开 Codex++ 界面，Codex 仍需点击启动")} />
+        <CardHead title={t("开机打开 iCodex")} detail={t("登录系统后打开 iCodex 界面，Codex 仍需点击启动")} />
         <CardContent>
           <label className="switch-row">
             <input
@@ -7698,7 +7698,7 @@ function MaintenanceScreen({
         </CardContent>
       </Panel>
       <Panel>
-        <CardHead title={t("自动接管官方 App")} detail={t("你自己双击启动官方 App 时，Codex++ 自动接管并注入增强")} />
+        <CardHead title={t("自动接管官方 App")} detail={t("你自己双击启动官方 App 时，iCodex 自动接管并注入增强")} />
         <CardContent>
           <label className="switch-row">
             <input
@@ -7708,7 +7708,7 @@ function MaintenanceScreen({
             />
             <span>
               <strong>{t("开启自动接管")}</strong>
-              <small>{t("开启后，你自己启动官方 App 时 Codex++ 会自动接管。官方 App 已在运行且没有调试端口时，会先退出再带参数重开（可能中断正在进行的操作）。")}</small>
+              <small>{t("开启后，你自己启动官方 App 时 iCodex 会自动接管。官方 App 已在运行且没有调试端口时，会先退出再带参数重开（可能中断正在进行的操作）。")}</small>
             </span>
             <ToggleVisual />
           </label>
@@ -7733,7 +7733,7 @@ function MaintenanceScreen({
                 <p className="hint">{tf("上次接管：{0}", [new Date(autoTakeover.lastTakeoverAtMs).toLocaleString()])}</p>
               ) : null}
               {autoTakeover?.platformSupported ? null : <p className="hint">{t("自动接管目前只支持 macOS。")}</p>}
-              <p className="hint">{t("仅在 Codex++ 正在运行时生效；需要重启官方 App 时会自动重启。")}</p>
+              <p className="hint">{t("仅在 iCodex 正在运行时生效；需要重启官方 App 时会自动重启。")}</p>
               <Toolbar>
                 <Button variant="secondary" onClick={() => void actions.takeOverNow()}>{t("立即接管")}</Button>
                 <Button variant="secondary" onClick={() => void actions.pauseAutoTakeover()}>{t("本次不接管")}</Button>
@@ -7741,7 +7741,7 @@ function MaintenanceScreen({
               </Toolbar>
             </>
           ) : (
-            <p className="hint">{t("仅在 Codex++ 正在运行时生效；建议同时开启上面的「开机打开 Codex++」。")}</p>
+            <p className="hint">{t("仅在 iCodex 正在运行时生效；建议同时开启上面的「开机打开 iCodex」。")}</p>
           )}
         </CardContent>
       </Panel>
@@ -7820,10 +7820,10 @@ function AboutScreen({
   return (
     <>
       <Panel>
-        <CardHead title={t("关于 Codex++")} detail={t("本地 Codex 增强、管理工具和安装包维护")} />
+        <CardHead title={t("关于 iCodex")} detail={t("本地 Codex 增强、管理工具和安装包维护")} />
         <CardContent>
           <div className="metric-list">
-            <Metric label={t("Codex++ 版本")} value={overview?.current_version ?? update?.currentVersion ?? "-"} />
+            <Metric label={t("iCodex 版本")} value={overview?.current_version ?? update?.currentVersion ?? "-"} />
             <Metric label={t("Codex 版本")} value={overview?.codex_version ?? t("未检测到")} />
             <Metric label={t("项目地址")} value="github.com/BigPizzaV3/CodexPlusPlus" />
           </div>
@@ -8807,7 +8807,7 @@ function RelayProfileEditor({
   const queryBuiltinCommand = async <T,>(command: string, args?: Record<string, unknown>): Promise<T | null> => {
     try { return await invoke<T>(command, args); } catch (error) {
       // 索引只影响行级标记与便利回填（失败是假阴性、不产错误数据），可诊断即可。
-      console.warn(`[Codex++] ${command} 查询失败`, error);
+      console.warn(`[iCodex] ${command} 查询失败`, error);
       return null;
     }
   };
@@ -9712,13 +9712,13 @@ function RelayProfileEditor({
                                   }
                                 }
                               }}
-                              placeholder={t("需要补充供应商模型信息时填写；不填则使用 Codex++ 默认配置（自动压缩 90%、图片原样发送）。从供应商的 models.json 或 model.json 复制，支持多个模型。")}
+                              placeholder={t("需要补充供应商模型信息时填写；不填则使用 iCodex 默认配置（自动压缩 90%、图片原样发送）。从供应商的 models.json 或 model.json 复制，支持多个模型。")}
                               rows={7}
                             />
                             {metadataImportError ? <div className="relay-model-metadata-import-error" role="alert">{metadataImportError}</div> : null}
                             {metadataImportPreview?.ignoredFields.length ? (
                               <div className="relay-model-metadata-import-warning" role="status">
-                                {tf("以下字段由 Codex++ 计算或维护，导入不会覆盖：{0}", [metadataImportPreview.ignoredFields.join(", ")])}
+                                {tf("以下字段由 iCodex 计算或维护，导入不会覆盖：{0}", [metadataImportPreview.ignoredFields.join(", ")])}
                               </div>
                             ) : null}
                             <div className="relay-model-metadata-import-actions">
@@ -9810,7 +9810,7 @@ function RelayProfileEditor({
                 <div className="relay-config-section-head">
                   <div>
                     <strong>{t("单模型协议转换")}</strong>
-                    <span>{t("仅在当前供应商启用时生效；精确匹配模型名并使用目标供应商的 URL 与 Key。目标必须是 Responses API，且需要从 Codex++ 启动。")}</span>
+                    <span>{t("仅在当前供应商启用时生效；精确匹配模型名并使用目标供应商的 URL 与 Key。目标必须是 Responses API，且需要从 iCodex 启动。")}</span>
                   </div>
                   <div className="relay-model-list-tools">
                     <Button
@@ -10072,7 +10072,7 @@ function RelayProfileEditor({
             {showApiFields && profile.protocol === "chatCompletions" ? (
               <div className="hint-line relay-protocol-hint">
                 <MessageCircle className="h-4 w-4" />
-                <span>{t("此上游会通过本地 127.0.0.1:57321 转成 Responses API，需要从 Codex++ 启动 Codex。")}</span>
+                <span>{t("此上游会通过本地 127.0.0.1:57321 转成 Responses API，需要从 iCodex 启动 Codex。")}</span>
               </div>
             ) : null}
             <div className="hint-line relay-protocol-hint">
@@ -11452,8 +11452,8 @@ function PendingProviderImportDialog({
       <div className="modal-card provider-import-modal">
         <div className="modal-head">
           <div>
-            <h2>{t("导入 Codex++ 供应商")}</h2>
-            <p>{t("检测到来自网页的供应商配置导入请求，确认后会写入本机 Codex++。")}</p>
+            <h2>{t("导入 iCodex 供应商")}</h2>
+            <p>{t("检测到来自网页的供应商配置导入请求，确认后会写入本机 iCodex。")}</p>
           </div>
           <button className="toast-close" onClick={onDismiss} type="button">×</button>
         </div>
@@ -12017,7 +12017,7 @@ function GrokScreen({
         <ConfirmDialog
           confirm={{            title: t("应用到 Grok？"),
             message: tf(
-              "Grok 里所有由 Codex++ 管理的模型表会被供应商「{0}」的模型列表整体替换（[ui]、web_search 等未管理字段保留）。原配置会先备份。",
+              "Grok 里所有由 iCodex 管理的模型表会被供应商「{0}」的模型列表整体替换（[ui]、web_search 等未管理字段保留）。原配置会先备份。",
               [activeProfile?.name || ""],
             ),
             confirmText: applying ? t("应用中") : t("确认应用"),
@@ -12391,7 +12391,7 @@ function routeSubtitle(route: Route) {
     userScripts: t("内置和用户自定义拓展清单"),
     pluginMarket: t("检索插件，按需下载并安装到 Codex"),
     recommendations: t("普通推荐内容"),
-    agentCache: t("扫描 Codex、Claude 与 Codex++ 的已知缓存目录，由你选择清理项目。"),
+    agentCache: t("扫描 Codex、Claude 与 iCodex 的已知缓存目录，由你选择清理项目。"),
     maintenance: t("入口检查与修复、开机启动与应用路径"),
     about: t("版本信息、项目链接、GitHub Release 更新、日志与诊断"),
     settings: t("主题和启动参数"),

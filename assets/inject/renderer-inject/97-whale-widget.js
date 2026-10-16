@@ -14,7 +14,7 @@
     if (codexPlusWhaleState.notice) return;
     const notice = document.createElement("div"); notice.setAttribute("data-codex-plus-ext", "whale-widget"); notice.setAttribute("role", "status");
     notice.style.cssText = "position:fixed;right:20px;bottom:20px;z-index:2147483600;max-width:320px;padding:12px;border-radius:10px;background:#fff5ec;color:#7c3218;font:12px/1.6 system-ui;box-shadow:0 3px 16px #0002";
-    notice.textContent = "鲸鱼挂件暂时无法加载，10 秒后自动重试。可在 Codex++ 增强设置关闭后重新开启。";
+    notice.textContent = "鲸鱼挂件暂时无法加载，10 秒后自动重试。可在 iCodex 增强设置关闭后重新开启。";
     document.body.appendChild(notice); codexPlusWhaleState.notice = notice;
   }
   function codexPlusWhaleProfileFingerprint() {
@@ -39,7 +39,7 @@
     if (document.hidden) return;
     if (Date.now() < codexPlusWhaleState.failedUntil) return;
     if (typeof window.__CODEX_PLUS_WHALE_ENGINE__ !== "function") {
-      if (!codexPlusWhaleState.missingSource) console.warn("[Codex++] 完整鲸鱼运行时未随启动器加载，请重新构建启动器。");
+      if (!codexPlusWhaleState.missingSource) console.warn("[iCodex] 完整鲸鱼运行时未随启动器加载，请重新构建启动器。");
       codexPlusWhaleState.missingSource = true; codexPlusWhaleInitializationFailed(null); return;
     }
     const runtime = createCodexPlusWhaleFullRuntime();

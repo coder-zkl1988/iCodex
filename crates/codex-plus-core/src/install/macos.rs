@@ -12,6 +12,8 @@ use super::{
     APP_BUNDLE_ID, APP_NAME, InstallOptions, MACOS_APP_EXECUTABLE, MacosAppBundle,
     application_source, install_root_or_default,
 };
+#[cfg(target_os = "macos")]
+use super::{LEGACY_APP_NAME, is_app_name};
 
 #[cfg(target_os = "macos")]
 const LEGACY_MANAGER_BUNDLE_NAME: &str = "Codex++ 管理工具.app";
@@ -45,9 +47,18 @@ pub fn install_app_bundles(options: &InstallOptions) -> anyhow::Result<()> {
         return Ok(());
     }
     let source_bundle = native_application_bundle_from_executable(source)?;
+    // 当前运行的包已经在安装目录里（包括改名前的 Codex++.app）：只校验，不再复制出第二个应用。
+    if source_bundle.parent() == plan.app_path.parent()
+        && source_bundle
+            .file_stem()
+            .and_then(|name| name.to_str())
+            .is_some_and(is_app_name)
+    {
+        return Ok(());
+    }
     if plan.app_path.exists() {
         anyhow::bail!(
-            "目标 app 已存在，请重新安装完整 Codex++.app；不会改写包内签名文件：{}",
+            "目标 app 已存在，请重新安装完整 iCodex.app；不会改写包内签名文件：{}",
             plan.app_path.display()
         );
     }
@@ -60,7 +71,7 @@ pub fn install_app_bundles(options: &InstallOptions) -> anyhow::Result<()> {
         .output()?;
     if !result.status.success() {
         anyhow::bail!(
-            "复制 Codex++.app 失败：{}",
+            "复制 iCodex.app 失败：{}",
             String::from_utf8_lossy(&result.stderr).trim()
         );
     }
@@ -70,9 +81,13 @@ pub fn install_app_bundles(options: &InstallOptions) -> anyhow::Result<()> {
 
 #[cfg(target_os = "macos")]
 pub fn uninstall_app_bundles(options: &InstallOptions) -> anyhow::Result<()> {
-    let app = install_root_or_default(options).join(format!("{APP_NAME}.app"));
-    if app.exists() {
-        fs::remove_dir_all(app)?;
+    // 改名前装的 Codex++.app 也属于本产品，卸载时一并移除。
+    let root = install_root_or_default(options);
+    for name in [APP_NAME, LEGACY_APP_NAME] {
+        let app = root.join(format!("{name}.app"));
+        if app.exists() {
+            fs::remove_dir_all(app)?;
+        }
     }
     Ok(())
 }
@@ -145,7 +160,7 @@ pub fn uninstall_app_bundles(_options: &InstallOptions) -> anyhow::Result<()> {
 pub fn native_application_bundle_from_executable(executable: &Path) -> anyhow::Result<PathBuf> {
     let canonical = fs::canonicalize(executable).map_err(|error| {
         anyhow::anyhow!(
-            "请从完整的 Codex++.app 安装；可执行文件不可用：{}：{error}",
+            "请从完整的 iCodex.app 安装；可执行文件不可用：{}：{error}",
             executable.display()
         )
     })?;
@@ -157,7 +172,7 @@ pub fn native_application_bundle_from_executable(executable: &Path) -> anyhow::R
         .and_then(Path::parent)
         .filter(|app| app.extension().is_some_and(|extension| extension == "app"))
         .ok_or_else(|| {
-            anyhow::anyhow!("请从完整的 Codex++.app 安装；不再从裸二进制重建 macOS app。")
+            anyhow::anyhow!("请从完整的 iCodex.app 安装；不再从裸二进制重建 macOS app。")
         })?;
     validate_native_bundle(app)?;
     if !paths_refer_to_same_file(
@@ -165,7 +180,7 @@ pub fn native_application_bundle_from_executable(executable: &Path) -> anyhow::R
         &app.join("Contents/MacOS").join(MACOS_APP_EXECUTABLE),
     ) {
         anyhow::bail!(
-            "当前可执行文件不是 Codex++ 原生界面的主程序：{}",
+            "当前可执行文件不是 iCodex 原生界面的主程序：{}",
             executable.display()
         );
     }
@@ -190,24 +205,21 @@ pub(super) fn validate_native_bundle(app: &Path) -> anyhow::Result<()> {
     })?;
     if plist_value(&plist, "CFBundleIdentifier") != Some(APP_BUNDLE_ID)
         || plist_value(&plist, "CFBundleExecutable") != Some(MACOS_APP_EXECUTABLE)
-        || plist_value(&plist, "CFBundleName") != Some(APP_NAME)
+        || !plist_value(&plist, "CFBundleName").is_some_and(is_app_name)
         || !plist_true_value(&plist, "CodexPlusUnifiedApp")
     {
         anyhow::bail!(
-            "macOS app 不是完整的 Codex++ 原生界面包，请重新安装：{}",
+            "macOS app 不是完整的 iCodex 原生界面包，请重新安装：{}",
             app.display()
         );
     }
     let executable = app.join("Contents/MacOS").join(MACOS_APP_EXECUTABLE);
     let metadata = fs::metadata(&executable)?;
     if !metadata.is_file() || metadata.len() < 1024 {
-        anyhow::bail!("Codex++ 可执行文件缺失或无效：{}", executable.display());
+        anyhow::bail!("iCodex 可执行文件缺失或无效：{}", executable.display());
     }
     if !fs::canonicalize(&executable)?.starts_with(fs::canonicalize(app)?) {
-        anyhow::bail!(
-            "Codex++ 可执行文件越出 app 包目录：{}",
-            executable.display()
-        );
+        anyhow::bail!("iCodex 可执行文件越出 app 包目录：{}", executable.display());
     }
     use std::io::Read;
     let mut magic = [0_u8; 4];
@@ -224,7 +236,7 @@ pub(super) fn validate_native_bundle(app: &Path) -> anyhow::Result<()> {
             | 0xbfbafeca
     ) {
         anyhow::bail!(
-            "Codex++ 可执行文件不是 Mach-O；不会生成脚本入口：{}",
+            "iCodex 可执行文件不是 Mach-O；不会生成脚本入口：{}",
             executable.display()
         );
     }
@@ -309,7 +321,7 @@ fn info_plist() -> String {
   <array>
     <dict>
       <key>CFBundleURLName</key>
-      <string>Codex++ Links</string>
+      <string>iCodex Links</string>
       <key>CFBundleURLSchemes</key>
       <array>
         <string>codexplusplus</string>

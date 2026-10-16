@@ -162,7 +162,7 @@ pub struct LaunchOptions {
     pub debug_port: u16,
     pub helper_port: u16,
     pub status_store: StatusStore,
-    /// 本次启动使用的 Codex++ 状态目录（多开实例隔离用）。
+    /// 本次启动使用的 iCodex 状态目录（多开实例隔离用）。
     ///
     /// 多开原先只靠给 worker 换 `HOME`，但 Windows 上 `directories` 走
     /// `SHGetKnownFolderPath`、不读 `HOME`，导致实例会读写主实例的状态文件。
@@ -196,7 +196,7 @@ impl Default for LaunchOptions {
 /// 关键输入也不该走全局可变状态。
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct LaunchInstance {
-    /// Codex++ 状态目录（`settings.json` / `latest-status.json` / 诊断日志）。
+    /// iCodex 状态目录（`settings.json` / `latest-status.json` / 诊断日志）。
     pub state_dir: Option<PathBuf>,
     /// Codex 配置目录（`CODEX_HOME`）。
     pub codex_home: Option<PathBuf>,
@@ -533,7 +533,7 @@ fn describe_helper_bind_failure(
         return error.context(format!(
             "协议代理端口 {helper_port} 被其他进程占用，等待 {} 秒后仍未释放。\
              该端口写在 config.toml 的 base_url 里，不能自动改用其他端口；\
-             请退出仍在运行的 Codex++ 或占用该端口的程序后重试。",
+             请退出仍在运行的 iCodex 或占用该端口的程序后重试。",
             bind_retry_timeout_ms / 1000
         ));
     }
@@ -820,7 +820,7 @@ where
             } else {
                 let degraded = launch_status(
                     "running_degraded",
-                    "Codex launched; Codex++ enhancements are still waiting for the page bridge.",
+                    "Codex launched; iCodex enhancements are still waiting for the page bridge.",
                     debug_port,
                     helper_port,
                     &app_dir,
@@ -842,7 +842,7 @@ where
             timeline.mark("ready", 100);
             let status = launch_status(
                 "running",
-                "Codex++ launcher ready",
+                "iCodex launcher ready",
                 debug_port,
                 helper_port,
                 &app_dir,
@@ -995,7 +995,7 @@ impl LaunchHooks for DefaultLaunchHooks {
             Some(settings.codex_app_path.as_str()),
         )
         .ok_or_else(|| {
-            // issue #2204：原来四种失败原因（不存在 / 是 Codex++ 目录 / 无可执行文件 /
+            // issue #2204：原来四种失败原因（不存在 / 是 iCodex 目录 / 无可执行文件 /
             // 纯自动探测落空）共用一句「Codex App directory not found」，用户看不出
             // 该改什么。这里按来源细分，并保留原句前缀以便既有日志检索与用户既有
             // 报障文本仍能对上。
@@ -2328,7 +2328,7 @@ async fn handle_dictation_connection(
         let result = if !crate::dictation::valid_helper_token(token.as_deref()) {
             Err(crate::dictation::DictationError {
                 status: 403,
-                message: "语音请求未授权，请从 Codex++ 重新发起".to_string(),
+                message: "语音请求未授权，请从 iCodex 重新发起".to_string(),
             })
         } else {
             let settings = SettingsStore::default().load().unwrap_or_default();
@@ -4342,11 +4342,11 @@ pub async fn activate_packaged_app(
 fn packaged_activation_fallback_block_reason(is_elevated: bool) -> Option<&'static str> {
     if is_elevated {
         Some(
-            "Codex 打包应用激活失败，且 Codex++ 当前以管理员（提权）身份运行：\
+            "Codex 打包应用激活失败，且 iCodex 当前以管理员（提权）身份运行：\
              Windows 不允许提权进程激活 MSIX 打包应用，按路径启动的进程会因缺少\
              包身份立即退出。请取消可执行文件「属性 → 兼容性 → 以管理员身份运行\
              此程序」的勾选（或清除 AppCompatFlags\\Layers 中的 RUNASADMIN 标记），\
-             然后以普通权限重新启动 Codex++",
+             然后以普通权限重新启动 iCodex",
         )
     } else {
         None

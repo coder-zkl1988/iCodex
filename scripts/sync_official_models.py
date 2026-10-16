@@ -7,7 +7,7 @@ r"""官方模型元数据同步：openai/codex 仓库 → assets/codex-models.js
 - 静态资产是「官方现役 + 存量模型」的超集，本脚本只增不删；
   官方下架的模型可能仍被第三方中转使用，删除属于人工决策。
 - 同步的条目保持官方原值（含 use_responses_lite=true）；
-  Codex++ 的产品级适配（如中转强制 lite=false）由 compat 合并层与
+  iCodex 的产品级适配（如中转强制 lite=false）由 compat 合并层与
   builder 负责，不落在静态资产里。
 - comp_hash 为服务端一致性标记，语义未公开，不带入静态资产。
 
